@@ -1,15 +1,26 @@
 name: 'CI'
-on:
-  pull_request:
+on: [push, pull_request]
 jobs:
   build-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2         # checkout the repo
-      - run: npm ci                       # install packages
-      - run: npm test                     # run tests (configured to use jest-junit reporter)
-      - uses: actions/upload-artifact@v2  # upload test results
-        if: success() || failure()        # run this step even if previous step failed
+      - uses: actions/checkout@v3         # checkout the repo
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v3       # setup adopt-hotspot jdk 17
         with:
-          name: test-results
-          path: jest-junit.xml
+          java-version: '17'
+          distribution: 'adopt-hotspot'
+
+      - name: Setup gradle
+        uses: gradle/gradle-build-action@v2 # setup gradle and use a wrapper
+        with:
+          gradle-version: wrapper
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew            # make ./gradlew an executable command for Linux
+
+      - name: Execute gradle task
+        run: ./gradlew clean build test    # run gradle tasks: clean, test and build
+
+

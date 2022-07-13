@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+}
+
+jar {
+    archiveBaseName = 'svydovets-bring'
+}
+
+version ='0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+ext {
+    junitVersion = '5.8.2'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
