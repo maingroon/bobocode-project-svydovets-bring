@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE suppressions PUBLIC
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+        "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+
+<!--    As for now commented out and left as an example of suppression
+        The following suppressions XML document directs a SuppressionFilter to reject
+        JavadocStyleCheck violations for lines 82 and 108 to 122 of file AbstractComplexityCheck.java, and
+        MagicNumberCheck violations for line 221 of file JavadocStyleCheck.java, and
+        'Missing a Javadoc comment' violations for all lines and files -->
+
+<suppressions>
+    <!--    <suppress checks="JavadocStyleCheck"-->
+    <!--              files="AbstractComplexityCheck.java"-->
+    <!--              lines="82,108-122"/>-->
+    <!--    <suppress checks="MagicNumberCheck"-->
+    <!--              files="JavadocStyleCheck.java"-->
+    <!--              lines="221"/>-->
+    <!--    <suppress message="Missing a Javadoc comment"/>-->
+</suppressions>

@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'checkstyle'
 }
 
 jar {
@@ -15,6 +16,7 @@ ext {
     reflections = '0.10.2'
     lombok = '1.18.24'
     commonsLang3 = '3.12.0'
+    checkstyle = '10.3.1'
 }
 
 configurations {
@@ -36,7 +38,23 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
 }
 
+checkstyle {
+    toolVersion "${checkstyle}"
+    configFile(file("config/checkstyle/checkstyle.xml"))
+    ignoreFailures = false
+    maxWarnings = 0
+}
+
+checkstyleMain {
+    enabled = gradle.startParameter.taskNames.contains('checkstyleMain')
+    source = 'src/main/java'
+}
+
+checkstyleTest {
+    enabled = gradle.startParameter.taskNames.contains('checkstyleTest')
+    source = 'src/test/java'
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }
-
