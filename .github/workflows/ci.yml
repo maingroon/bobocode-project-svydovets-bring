@@ -20,7 +20,9 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew            # make ./gradlew an executable command for Linux
 
+      - name: Execute checkstyle
+        run: ./gradlew checkstyleMain     # run gradle checkstyle
+
       - name: Execute gradle task
         run: ./gradlew clean build test    # run gradle tasks: clean, test and build
-
 
