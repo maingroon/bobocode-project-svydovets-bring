@@ -1,9 +1,9 @@
 package com.bobocode.svydovets.beans.factory;
 
-import com.bobocode.svydovets.beans.definition.BeanDefinition;
-
 import java.util.Map;
 import java.util.Set;
+
+import com.bobocode.svydovets.beans.definition.BeanDefinition;
 
 public interface BeanFactory {
 

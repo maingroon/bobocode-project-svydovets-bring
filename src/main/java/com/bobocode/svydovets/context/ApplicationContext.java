@@ -1,9 +1,9 @@
 package com.bobocode.svydovets.context;
 
+import java.util.Map;
+
 import com.bobocode.svydovets.exception.NoSuchBeanDefinitionException;
 import com.bobocode.svydovets.exception.NoUniqueBeanDefinitionException;
-
-import java.util.Map;
 
 public interface ApplicationContext {
 
