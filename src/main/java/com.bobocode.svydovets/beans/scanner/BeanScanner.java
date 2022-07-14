@@ -1,4 +1,6 @@
-package com.bobocode.svydovets.beans;
+package com.bobocode.svydovets.beans.scanner;
+
+import com.bobocode.svydovets.beans.definition.BeanDefinition;
 
 import java.util.Map;
 

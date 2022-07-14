@@ -13,5 +13,5 @@ public interface ApplicationContext {
 
     <T> T getBean(String name, Class<T> beanType) throws NoSuchBeanDefinitionException;
 
-    Map<String, Object> getBeans(Class<?> beanType);
+    Map<String, Object> getBeans(Class<?> beanType) throws NoSuchBeanDefinitionException;
 }

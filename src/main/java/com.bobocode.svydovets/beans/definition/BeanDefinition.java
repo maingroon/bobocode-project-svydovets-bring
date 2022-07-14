@@ -1,4 +1,4 @@
-package com.bobocode.svydovets.beans;
+package com.bobocode.svydovets.beans.definition;
 
 public interface BeanDefinition {
 

@@ -1,6 +1,6 @@
 package com.bobocode.svydovets.beans.factory;
 
-import com.bobocode.svydovets.beans.BeanDefinition;
+import com.bobocode.svydovets.beans.definition.BeanDefinition;
 
 import java.util.Map;
 import java.util.Set;
