@@ -18,6 +18,7 @@
 
     <module name="SuppressionFilter">
         <property name="file" value="${config_loc}/suppressions.xml"/>
+        <property name="optional" value="false"/>
     </module>
 
     <!-- Checks for whitespace -->
@@ -160,6 +161,7 @@
             <property name="specialImportsRegExp" value="org" />
             <property name="thirdPartyPackageRegExp" value="com" />
             <property name="sortImportsInGroupAlphabetically" value="true" />
+            <property name="separateLineBetweenGroups" value="true"/>
             <property name="customImportOrderRules"
                       value="STATIC###STANDARD_JAVA_PACKAGE###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE" />
         </module>
