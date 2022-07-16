@@ -1,6 +1,7 @@
 package com.bobocode.svydovets.exception;
 
 public class NoSuchBeanDefinitionException extends RuntimeException {
+
     public NoSuchBeanDefinitionException() {
     }
 
