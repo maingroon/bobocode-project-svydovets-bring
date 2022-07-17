@@ -1,6 +1,6 @@
 # Bring, svydovets team
  The Bring is the [Inversion of Control (IoC) framework](https://en.wikipedia.org/wiki/Inversion_of_control#:~:text=In%20software%20engineering%2C%20inversion%20of,control%20from%20a%20generic%20framework.).  
- The Bring take care of [Dependency Injection (DI)](https://en.wikipedia.org/wiki/Dependency_injection) into the Bean, 
+ The Bring takes care of [Dependency Injection (DI)](https://en.wikipedia.org/wiki/Dependency_injection) into the Bean and manages full Bean lifecycle.
  and manage full Bean lifecycle.
 
 ## Configuration:
