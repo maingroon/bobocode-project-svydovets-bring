@@ -31,7 +31,7 @@ public class ComponentBeanScanner implements BeanScanner {
                 })
                 .collect(Collectors.toMap(
                         BeanDefinition::getName,
-                        bd -> bd
+                        beanDefinition -> beanDefinition
                 ));
     }
 }
