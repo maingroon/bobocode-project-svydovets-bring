@@ -4,12 +4,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.bobocode.svydovets.context.AnnotationConfigurationApplicationContext;
+import com.bobocode.svydovets.context.ApplicationContext;
 import org.reflections.Reflections;
 
 import com.bobocode.svydovets.annotation.Component;
 import com.bobocode.svydovets.beans.definition.BeanDefinition;
 
 public class ComponentBeanScanner implements BeanScanner {
+    private final ApplicationContext context;
+
+    public ComponentBeanScanner(ApplicationContext сontext) {
+        this.context = сontext;
+    }
 
     /**
      * This method scan package to find classes annotated with @Component annotation

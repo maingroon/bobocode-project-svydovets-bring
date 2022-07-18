@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Map;
 
+import com.bobocode.svydovets.context.AnnotationConfigurationApplicationContext;
+import com.bobocode.svydovets.context.ApplicationContext;
 import org.junit.jupiter.api.Test;
 
 import com.bobocode.svydovets.beans.definition.BeanDefinition;
@@ -15,7 +17,8 @@ public class ComponentBeanScannerTest {
 
     public static final String ROOT_MOCK_PACKAGE = "com.bobocode.svydovets.beans.scanner.quoter";
     public static final String INVALID_PACKAGE_NAME = "com.bobocode.invalid.package";
-    private final ComponentBeanScanner scanner = new ComponentBeanScanner();
+    public final ApplicationContext context = new AnnotationConfigurationApplicationContext(ROOT_MOCK_PACKAGE);
+    private final ComponentBeanScanner scanner = new ComponentBeanScanner(context);
 
     @Test
     public void shouldScanPackageAndCreateBeanDefinitionWithProvidedName() {
