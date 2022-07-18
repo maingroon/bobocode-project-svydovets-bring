@@ -11,11 +11,11 @@ import com.bobocode.svydovets.beans.scanner.quoter.books.DiscworldQuoter;
 import com.bobocode.svydovets.beans.scanner.quoter.books.HarryPotterQuoter;
 
 
-public class AnnotationBeanScannerTest {
+public class ComponentBeanScannerTest {
 
     public static final String ROOT_MOCK_PACKAGE = "com.bobocode.svydovets.beans.scanner.quoter";
     public static final String INVALID_PACKAGE_NAME = "com.bobocode.invalid.package";
-    private final AnnotationBeanScanner scanner = new AnnotationBeanScanner();
+    private final ComponentBeanScanner scanner = new ComponentBeanScanner();
 
     @Test
     public void shouldScanPackageAndCreateBeanDefinitionWithProvidedName() {

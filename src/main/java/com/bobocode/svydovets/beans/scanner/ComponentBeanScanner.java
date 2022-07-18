@@ -9,7 +9,7 @@ import org.reflections.Reflections;
 import com.bobocode.svydovets.annotation.Component;
 import com.bobocode.svydovets.beans.definition.BeanDefinition;
 
-public class AnnotationBeanScanner implements BeanScanner {
+public class ComponentBeanScanner implements BeanScanner {
 
     /**
      * This method scan package to find classes annotated with @Component annotation
