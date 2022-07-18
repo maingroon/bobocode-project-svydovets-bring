@@ -20,9 +20,9 @@ public class ComponentBeanScanner implements BeanScanner {
      */
     @Override
     public Map<String, BeanDefinition> scan(String packageName) {
-        Reflections reflections = new Reflections(packageName);
-        Set<Class<?>> typesAnnotatedWith = reflections.getTypesAnnotatedWith(Component.class);
-        return typesAnnotatedWith.stream()
+        return new Reflections(packageName)
+                .getTypesAnnotatedWith(Component.class)
+                .stream()
                 .map(type -> {
                     var name = type.getAnnotation(Component.class).value();
                     name = name.isEmpty() ? type.getName() : name;
