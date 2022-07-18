@@ -23,11 +23,11 @@ public class ComponentBeanScanner implements BeanScanner {
         Reflections reflections = new Reflections(packageName);
         Set<Class<?>> typesAnnotatedWith = reflections.getTypesAnnotatedWith(Component.class);
         return typesAnnotatedWith.stream()
-                .map(c -> {
-                    var name = c.getAnnotation(Component.class).value();
-                    name = name.isEmpty() ? c.getName() : name;
+                .map(type -> {
+                    var name = type.getAnnotation(Component.class).value();
+                    name = name.isEmpty() ? type.getName() : name;
 
-                    return new BeanDefinition(name, c);
+                    return new BeanDefinition(name, type);
                 })
                 .collect(Collectors.toMap(
                         BeanDefinition::getName,
