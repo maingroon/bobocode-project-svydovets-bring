@@ -14,8 +14,8 @@ import com.bobocode.svydovets.beans.definition.BeanDefinition;
 public class ComponentBeanScanner implements BeanScanner {
     private final ApplicationContext context;
 
-    public ComponentBeanScanner(ApplicationContext сontext) {
-        this.context = сontext;
+    public ComponentBeanScanner(ApplicationContext context) {
+        this.context = context;
     }
 
     /**

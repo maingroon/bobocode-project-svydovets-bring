@@ -12,4 +12,8 @@ public interface BeanFactory {
     <T> T createBean(Map<String, BeanDefinition> nameToBeanDefinition);
 
     Map<String, Object> create(Set<Class<?>> beanTypes);
+
+    Object createBean(String name);
+
+    void setNameToBeanDefinitionMap(Map<String, BeanDefinition> scan);
 }
