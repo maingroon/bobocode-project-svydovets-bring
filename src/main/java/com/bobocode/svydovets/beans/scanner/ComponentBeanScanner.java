@@ -1,7 +1,6 @@
 package com.bobocode.svydovets.beans.scanner;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.reflections.Reflections;
@@ -12,11 +11,11 @@ import com.bobocode.svydovets.beans.definition.BeanDefinition;
 public class ComponentBeanScanner implements BeanScanner {
 
     /**
-     * This method scan package to find classes annotated with @Component annotation
-     * and returns bean definition for this classes.
+     * This method scan package to find classes annotated with {@link Component} annotation
+     * and returns bean definition for these classes.
      *
      * @param packageName - package name that will be scanned
-     * @return - map of bean d
+     * @return - map of bean definition
      */
     @Override
     public Map<String, BeanDefinition> scan(String packageName) {

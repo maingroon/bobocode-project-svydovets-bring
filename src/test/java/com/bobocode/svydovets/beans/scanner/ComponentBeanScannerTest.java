@@ -10,15 +10,14 @@ import com.bobocode.svydovets.beans.definition.BeanDefinition;
 import com.bobocode.svydovets.beans.scanner.quoter.books.DiscworldQuoter;
 import com.bobocode.svydovets.beans.scanner.quoter.books.HarryPotterQuoter;
 
-
-public class ComponentBeanScannerTest {
+class ComponentBeanScannerTest {
 
     public static final String ROOT_MOCK_PACKAGE = "com.bobocode.svydovets.beans.scanner.quoter";
     public static final String INVALID_PACKAGE_NAME = "com.bobocode.invalid.package";
     private final ComponentBeanScanner scanner = new ComponentBeanScanner();
 
     @Test
-    public void shouldScanPackageAndCreateBeanDefinitionWithProvidedName() {
+    void shouldScanPackageAndCreateBeanDefinitionWithProvidedName() {
         // GIVEN
         var beanName = "hp";
 
@@ -32,7 +31,7 @@ public class ComponentBeanScannerTest {
     }
 
     @Test
-    public void shouldScanPackageAndCreateBeanDefinitionWithDefaultName() {
+    void shouldScanPackageAndCreateBeanDefinitionWithDefaultName() {
         // GIVEN
         var beanName = DiscworldQuoter.class.getName();
 
@@ -46,7 +45,7 @@ public class ComponentBeanScannerTest {
     }
 
     @Test
-    public void shouldReturnEmptyMapIfPackageIsInvalid() {
+    void shouldReturnEmptyMapIfPackageIsInvalid() {
         // WHEN
         Map<String, BeanDefinition> beans = scanner.scan(INVALID_PACKAGE_NAME);
 
