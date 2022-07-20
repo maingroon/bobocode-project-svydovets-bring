@@ -1,11 +1,12 @@
 package com.bobocode.svydovets.beans.scanner;
 
-import com.bobocode.svydovets.annotation.Configuration;
-import com.bobocode.svydovets.beans.definition.BeanDefinition;
-import org.reflections.Reflections;
-
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.reflections.Reflections;
+
+import com.bobocode.svydovets.annotation.Configuration;
+import com.bobocode.svydovets.beans.definition.BeanDefinition;
 
 public class ConfigurationBeanScanner implements BeanScanner {
 
