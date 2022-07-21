@@ -4,8 +4,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.bobocode.svydovets.context.AnnotationConfigurationApplicationContext;
-import com.bobocode.svydovets.context.ApplicationContext;
 import org.reflections.Reflections;
 
 import com.bobocode.svydovets.annotation.Component;

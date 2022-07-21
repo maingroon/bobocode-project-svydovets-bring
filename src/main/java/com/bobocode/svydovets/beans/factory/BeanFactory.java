@@ -7,17 +7,17 @@ import com.bobocode.svydovets.beans.definition.BeanDefinition;
 
 public interface BeanFactory {
 
-    <T> T createBean(Class<T> beanType);
-
-    <T> T createBean(Map<String, BeanDefinition> nameToBeanDefinition);
-
-    Map<String, Object> create(Set<Class<?>> beanTypes);
-
     Object createBean(String name);
+
+    <T> T createBean(Class<T> beanType);
 
     <T> T createBean(String name, Class<T> beanType);
 
+    <T> T createBean(Map<String, BeanDefinition> nameToBeanDefinition);
+
     Map<String, Object> createBeans(Class<?> beanType);
+
+    Map<String, Object> create(Set<Class<?>> beanTypes);
 
     void setNameToBeanDefinitionMap(Map<String, BeanDefinition> scan);
 }
