@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BeanFactoryImpl implements BeanFactory{
+public class BeanFactoryImpl implements BeanFactory {
     private final Map<String, BeanDefinition> nameToBeanDefinition;
 
     public BeanFactoryImpl() {
@@ -34,11 +34,18 @@ public class BeanFactoryImpl implements BeanFactory{
     }
 
     @Override
+    public <T> T createBean(String name, Class<T> beanType) {
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> createBeans(Class<?> beanType) {
+        return null;
+    }
+
+    @Override
     public void setNameToBeanDefinitionMap(Map<String, BeanDefinition> map) {
         nameToBeanDefinition.putAll(map);
     }
 
-    private <T> T createBean(String name, Class<T> beanType) {
-        return null;
-    }
 }

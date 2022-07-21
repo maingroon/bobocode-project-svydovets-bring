@@ -4,21 +4,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Map;
 
-import com.bobocode.svydovets.context.AnnotationConfigurationApplicationContext;
-import com.bobocode.svydovets.context.ApplicationContext;
 import org.junit.jupiter.api.Test;
 
 import com.bobocode.svydovets.beans.definition.BeanDefinition;
 import com.bobocode.svydovets.beans.scanner.quoter.books.DiscworldQuoter;
 import com.bobocode.svydovets.beans.scanner.quoter.books.HarryPotterQuoter;
-
+import com.bobocode.svydovets.context.AnnotationConfigurationApplicationContext;
+import com.bobocode.svydovets.context.ApplicationContext;
 
 public class ComponentBeanScannerTest {
 
     public static final String ROOT_MOCK_PACKAGE = "com.bobocode.svydovets.beans.scanner.quoter";
     public static final String INVALID_PACKAGE_NAME = "com.bobocode.invalid.package";
     public final ApplicationContext context = new AnnotationConfigurationApplicationContext(ROOT_MOCK_PACKAGE);
-    private final ComponentBeanScanner scanner = new ComponentBeanScanner(context);
+    private final ComponentBeanScanner scanner = new ComponentBeanScanner();
 
     @Test
     public void shouldScanPackageAndCreateBeanDefinitionWithProvidedName() {
