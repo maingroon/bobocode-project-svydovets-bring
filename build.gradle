@@ -35,13 +35,13 @@ dependencies {
     implementation 'org.reflections:reflections:${reflections}'
     implementation 'org.projectlombok:lombok:${lombok}'
     implementation 'org.apache.commons:commons-lang3:${commonsLang3}'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:${junitVersion}'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:${junitVersion}'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:${junitVersion}'
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
 }
 
 checkstyle {
-    toolVersion '${checkstyle}'
+    toolVersion "${checkstyle}"
     configFile(file('config/checkstyle/checkstyle.xml'))
     ignoreFailures = false
     maxWarnings = 0
