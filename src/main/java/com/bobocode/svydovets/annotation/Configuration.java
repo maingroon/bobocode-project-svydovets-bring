@@ -7,6 +7,9 @@ import java.lang.annotation.Target;
 
 import com.bobocode.svydovets.beans.definition.BeanDefinition;
 
+/**
+ * This is the marker for the Bring that in class that marked with this annotation some bean configurations.
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Configuration {
