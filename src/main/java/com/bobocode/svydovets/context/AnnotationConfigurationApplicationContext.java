@@ -25,6 +25,16 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
         this.scan(packageName);
     }
 
+    public AnnotationConfigurationApplicationContext(BeanFactory beanFactory,
+                                                     ConfigurationBeanScanner configScanner,
+                                                     ComponentBeanScanner componentScanner,
+                                                     String packageName) {
+        this.beanFactory = beanFactory;
+        this.configScanner = configScanner;
+        this.componentScanner = componentScanner;
+        this.scan(packageName);
+    }
+
     @Override
     public <T> T getBean(Class<T> beanType) throws NoSuchBeanDefinitionException, NoUniqueBeanDefinitionException {
         return this.beanFactory.createBean(beanType);
@@ -49,8 +59,8 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
         if (StringUtils.isEmpty(packageName)) {
             throw new IllegalArgumentException("Package is empty! Please specify the package name.");
         }
-        Map<String, BeanDefinition> configNameToBeanDefinition = this.configScanner.scan(packageName);
-        Map<String, BeanDefinition> componentNameToBeanDefinition = this.componentScanner.scan(packageName);
+        var configNameToBeanDefinition = this.configScanner.scan(packageName);
+        var componentNameToBeanDefinition = this.componentScanner.scan(packageName);
         addNameToBeanDefinitionMap(configNameToBeanDefinition);
         addNameToBeanDefinitionMap(componentNameToBeanDefinition);
     }
