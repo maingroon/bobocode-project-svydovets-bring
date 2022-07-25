@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 public class BeanFactoryUtil {
 
     private final static Logger LOG = Logger.getLogger(BeanFactoryUtil.class.getName());
+
     /**
      * This method return the beanDefiniton from the definitions map, by the name of the bean
      * if name not set directly, it will serach defitintion by the type;
@@ -50,7 +51,8 @@ public class BeanFactoryUtil {
             // also add logic related constructor args injection
             Constructor<?> beanConstructor = beanDefinition.getBeanClass().getConstructor();
             bean = beanConstructor.newInstance();
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException exception) {
+        } catch (NoSuchMethodException | InstantiationException |
+                IllegalAccessException | InvocationTargetException exception) {
             LOG.info("BeanFactoryUtil.newInstance() throw Exception, beanDefinition: " + beanDefinition.getName()
                     + " exception: " + exception.getMessage());
         }
