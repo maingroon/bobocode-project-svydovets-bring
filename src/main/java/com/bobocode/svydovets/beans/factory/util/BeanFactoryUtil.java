@@ -18,7 +18,7 @@ public class BeanFactoryUtil {
      *
      * @param definitions bean definitionMap, key - bean name or type, value - BeanDefinition;
      * @param typeName    - the name of the type;
-     * @return
+     * @return beanDefinition object
      */
     public static BeanDefinition getDefinitionByName(Map<String, BeanDefinition> definitions, String typeName) {
         BeanDefinition beanDefinition;
@@ -42,7 +42,7 @@ public class BeanFactoryUtil {
      *
      * @param beanDefinition BeanDefinition describing a bean the will be created;
      * @param <T>            type of the Bean to be returned
-     * @return
+     * @return new Bean object
      */
     public static <T> T newInstance(BeanDefinition beanDefinition) {
         Object bean = null;
