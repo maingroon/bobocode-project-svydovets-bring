@@ -51,8 +51,8 @@ public class BeanFactoryUtil {
             // also add logic related constructor args injection
             Constructor<?> beanConstructor = beanDefinition.getBeanClass().getConstructor();
             bean = beanConstructor.newInstance();
-        } catch (NoSuchMethodException | InstantiationException |
-                IllegalAccessException | InvocationTargetException exception) {
+        } catch (NoSuchMethodException | InstantiationException
+                | IllegalAccessException | InvocationTargetException exception) {
             LOG.info("BeanFactoryUtil.newInstance() throw Exception, beanDefinition: " + beanDefinition.getName()
                     + " exception: " + exception.getMessage());
         }
