@@ -1,5 +1,9 @@
 package com.bobocode.svydovets.beans.definition;
 
+/**
+ * A BeanDefinition describes a bean instance, which has property values, constructor argument values
+ * for further bean creation.
+ */
 public class BeanDefinition {
 
     private String name;
