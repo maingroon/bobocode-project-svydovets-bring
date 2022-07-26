@@ -10,7 +10,7 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
-import com.bobocode.svydovets.beans.definition.ConfigurationBeanDefinition;
+import com.bobocode.svydovets.beans.definition.BeanDefinition;
 import com.bobocode.svydovets.beans.scanner.quoter.books.DiscworldQuoter;
 import com.bobocode.svydovets.beans.scanner.quoter.books.HarryPotterQuoter;
 import com.bobocode.svydovets.beans.scanner.quoter.bookshelfs.FantasyBookshelf;
@@ -36,8 +36,8 @@ class DefaultBeanScannerTest {
         assertNotNull(beanDefinitions.get(beanName));
         assertNull(beanDefinitions.get(DiscworldQuoter.class.getSimpleName()));
         assertNotNull(beanDefinitions.get(HarryPotterQuoter.class.getSimpleName()));
-        assertInstanceOf(ConfigurationBeanDefinition.class, beanDefinitions.get(beanName));
-        var hpBeanDef = (ConfigurationBeanDefinition) beanDefinitions.get(HarryPotterQuoter.class.getSimpleName());
+        assertInstanceOf(BeanDefinition.class, beanDefinitions.get(beanName));
+        var hpBeanDef = beanDefinitions.get(HarryPotterQuoter.class.getSimpleName());
         assertNotNull(hpBeanDef.getBeanMethod());
         assertEquals(FantasyBookshelf.class, hpBeanDef.getBeanClass());
         assertEquals(HarryPotterQuoter.class, hpBeanDef.getBeanMethod().getReturnType());

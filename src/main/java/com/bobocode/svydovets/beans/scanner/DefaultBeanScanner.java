@@ -14,7 +14,6 @@ import org.reflections.Reflections;
 import com.bobocode.svydovets.annotation.Bean;
 import com.bobocode.svydovets.annotation.Configuration;
 import com.bobocode.svydovets.beans.definition.BeanDefinition;
-import com.bobocode.svydovets.beans.definition.ConfigurationBeanDefinition;
 import com.bobocode.svydovets.exception.NoUniqueBeanDefinitionException;
 import com.bobocode.svydovets.exception.UnsupportedBeanTypeException;
 
@@ -45,7 +44,7 @@ public class DefaultBeanScanner implements BeanScanner {
         var beans = configurations.values().stream()
           .flatMap(confClass -> Arrays.stream(confClass.getBeanClass().getMethods()))
           .filter(method -> method.isAnnotationPresent(Bean.class))
-          .map(this::getConfigurationBeanDefinition)
+          .map(this::getBeanDefinition)
           .collect(toMap(BeanDefinition::getName, Function.identity()));
 
         try {
@@ -77,7 +76,7 @@ public class DefaultBeanScanner implements BeanScanner {
      * @param beanMethod - a method annotated with @Bean annotation
      * @return a new instance of a ConfigurationBeanDefinition
      */
-    private ConfigurationBeanDefinition getConfigurationBeanDefinition(Method beanMethod) {
+    private BeanDefinition getBeanDefinition(Method beanMethod) {
         var beanName = beanMethod.getAnnotation(Bean.class).value().trim();
         var beanClass = beanMethod.getReturnType();
         if (beanClass.equals(Void.TYPE)) {
@@ -85,6 +84,6 @@ public class DefaultBeanScanner implements BeanScanner {
               String.format("Bean: %s with the return type VOID could not be added to the context", beanName));
         }
         beanName = beanName.equals("") ? beanClass.getSimpleName() : beanName;
-        return new ConfigurationBeanDefinition(beanName, beanMethod.getDeclaringClass(), beanMethod);
+        return new BeanDefinition(beanName, beanMethod.getDeclaringClass(), beanMethod);
     }
 }
