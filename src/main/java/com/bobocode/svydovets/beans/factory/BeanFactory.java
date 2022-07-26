@@ -1,15 +1,11 @@
 package com.bobocode.svydovets.beans.factory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
-import java.util.Set;
 
 import com.bobocode.svydovets.beans.definition.BeanDefinition;
 
 public interface BeanFactory {
 
-    <T> T createBean(Class<T> beanType);
-
-    <T> T createBean(Map<String, BeanDefinition> nameToBeanDefinition);
-
-    Map<String, Object> create(Set<Class<?>> beanTypes);
+    Map<String, Object> createBeans(Map<String, BeanDefinition> nameToBeanDefinition) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
 }

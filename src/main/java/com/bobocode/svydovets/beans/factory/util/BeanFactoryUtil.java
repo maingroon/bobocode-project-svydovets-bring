@@ -10,6 +10,9 @@ import java.util.logging.Logger;
 
 public class BeanFactoryUtil {
 
+    private BeanFactoryUtil() {
+    }
+
     private final static Logger LOG = Logger.getLogger(BeanFactoryUtil.class.getName());
 
     /**
@@ -44,18 +47,14 @@ public class BeanFactoryUtil {
      * @param <T>            type of the Bean to be returned
      * @return new Bean object
      */
-    public static <T> T newInstance(BeanDefinition beanDefinition) {
-        Object bean = null;
+    public static <T> T newInstance(BeanDefinition beanDefinition) throws InstantiationException {
         try {
-            // TODO add creation strategy to be able to create bean through constructors or fabric.
-            // also add logic related constructor args injection
             Constructor<?> beanConstructor = beanDefinition.getBeanClass().getConstructor();
-            bean = beanConstructor.newInstance();
-        } catch (NoSuchMethodException | InstantiationException
-                | IllegalAccessException | InvocationTargetException exception) {
+            return (T) beanConstructor.newInstance();
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException exception) {
             LOG.info("BeanFactoryUtil.newInstance() throw Exception, beanDefinition: " + beanDefinition.getName()
                     + " exception: " + exception.getMessage());
+            throw new InstantiationException();
         }
-        return (T) bean;
     }
 }
