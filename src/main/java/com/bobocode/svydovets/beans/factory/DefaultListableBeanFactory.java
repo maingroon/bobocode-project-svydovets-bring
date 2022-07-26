@@ -13,10 +13,6 @@ public class DefaultListableBeanFactory implements BeanFactory {
     /** Create a new map of bean instances, from bean definitions.
      * @param definitionMap bean definition map, key - the name of the bean, the value - bean definition object
      * @return bean map, where key - bean name, and value - new instance of the bean
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
      */
     @Override
     public Map<String, Object> createBeans(Map<String, BeanDefinition> definitionMap) throws NoSuchMethodException,
