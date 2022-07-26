@@ -1,13 +1,11 @@
 package com.bobocode.svydovets.beans.factory;
 
-import com.bobocode.svydovets.beans.definition.BeanDefinition;
-import com.bobocode.svydovets.beans.exception.BeanInstantiationException;
-
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.bobocode.svydovets.beans.definition.BeanDefinition;
+import com.bobocode.svydovets.beans.exception.BeanInstantiationException;
 
 public class DefaultListableBeanFactory implements BeanFactory {
 
@@ -32,4 +30,5 @@ public class DefaultListableBeanFactory implements BeanFactory {
             throw new BeanInstantiationException(e.getMessage());
         }
     }
+
 }
