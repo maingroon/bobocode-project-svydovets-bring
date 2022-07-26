@@ -10,9 +10,8 @@ import java.util.Map;
 public class DefaultListableBeanFactory implements BeanFactory {
 
 
-    /**
-     * Create a new map of bean instances, from bean definitions.
-     * @param nameToBeanDefinition
+    /** Create a new map of bean instances, from bean definitions.
+     * @param nameToBeanDefinition bean definition map, key - the name of the bean, the value - bean definition object
      * @return bean map, where key - bean name, and value - new instance of the bean
      * @throws NoSuchMethodException
      * @throws InvocationTargetException

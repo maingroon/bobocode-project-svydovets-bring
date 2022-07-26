@@ -10,11 +10,6 @@ public class BeanDefinition {
         this.beanClass = beanClass;
     }
 
-    public BeanDefinition(Class<?> beanClass) {
-        this.name = beanClass.getName();
-        this.beanClass = beanClass;
-    }
-
     public String getName() {
         return name;
     }
