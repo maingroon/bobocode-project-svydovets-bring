@@ -26,7 +26,7 @@ public class DefaultListableBeanFactory implements BeanFactory {
         try {
             return beanDefinition.getBeanClass().getConstructor().newInstance();
         } catch (InvocationTargetException | InstantiationException
-          | IllegalAccessException | NoSuchMethodException exception) {
+            | IllegalAccessException | NoSuchMethodException exception) {
             throw new BeanInstantiationException(exception.getMessage());
         }
     }
