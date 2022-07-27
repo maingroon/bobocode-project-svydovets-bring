@@ -26,8 +26,7 @@ class ConfigurationBeanScannerTest {
 
         // THEN
         var fantasy = beanDefinitions.get(beanName);
-        assertEquals(FantasyBookshelf.class, fantasy.getBeanClass());
-        assertEquals(beanName, fantasy.getName());
+        assertEquals(beanName, "fantasy");
     }
 
     @Test

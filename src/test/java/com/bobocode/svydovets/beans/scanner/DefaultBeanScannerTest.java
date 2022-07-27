@@ -32,7 +32,7 @@ class DefaultBeanScannerTest {
     void scanSuccess() {
         var beanDefinitions = SCANNER.scan(PACKAGE);
         var beanName = "discworld";
-        assertEquals(3, beanDefinitions.size());
+        assertEquals(4, beanDefinitions.size());
         assertNotNull(beanDefinitions.get(beanName));
         assertNull(beanDefinitions.get(DiscworldQuoter.class.getSimpleName()));
         assertNotNull(beanDefinitions.get(HarryPotterQuoter.class.getSimpleName()));
