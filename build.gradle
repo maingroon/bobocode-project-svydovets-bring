@@ -68,7 +68,7 @@ sonarqube {
 
 jacocoTestReport {
     reports {
-        xml.isEnabled = true
+        xml.enabled true
     }
 }
 
