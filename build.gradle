@@ -65,13 +65,9 @@ sonarqube {
     }
 }
 
-test {
-    finalizedBy jacocoTestReport
-}
 jacocoTestReport {
-    dependsOn test
     reports {
-        xml.required = true
+        xml.enabled true
     }
 }
 
