@@ -66,8 +66,10 @@ sonarqube {
     }
 }
 
-reports {
-    xml.isEnabled = true
+jacocoTestReport {
+    reports {
+        xml.isEnabled = true
+    }
 }
 
 tasks.named('test') {

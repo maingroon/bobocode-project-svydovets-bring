@@ -1,13 +1,26 @@
 package com.bobocode.svydovets.beans.definition;
 
+import java.lang.reflect.Method;
+
+/**
+ * A BeanDefinition describes a bean instance, which has property values, constructor argument values
+ * for further bean creation.
+ */
 public class BeanDefinition {
 
     private String name;
     private Class<?> beanClass;
+    private Method beanMethod;
 
     public BeanDefinition(String name, Class<?> beanClass) {
         this.name = name;
         this.beanClass = beanClass;
+    }
+
+    public BeanDefinition(String name, Class<?> beanClass, Method beanMethod) {
+        this.name = name;
+        this.beanClass = beanClass;
+        this.beanMethod = beanMethod;
     }
 
     public String getName() {
@@ -24,5 +37,13 @@ public class BeanDefinition {
 
     public void setBeanClass(Class<?> beanClass) {
         this.beanClass = beanClass;
+    }
+
+    public Method getBeanMethod() {
+        return beanMethod;
+    }
+
+    public void setBeanMethod(Method beanMethod) {
+        this.beanMethod = beanMethod;
     }
 }
