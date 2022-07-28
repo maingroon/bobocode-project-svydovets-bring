@@ -1,8 +1,8 @@
 package com.bobocode.svydovets.beans.scanner;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Objects;
+
+import org.apache.commons.lang3.StringUtils;
 
 public abstract class AbstractBeanScanner implements BeanScanner {
 
