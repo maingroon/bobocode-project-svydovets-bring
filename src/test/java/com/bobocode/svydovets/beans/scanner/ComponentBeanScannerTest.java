@@ -34,7 +34,7 @@ public class ComponentBeanScannerTest {
     @Test
     public void shouldScanPackageAndCreateBeanDefinitionWithDefaultName() {
         // GIVEN
-        var beanName = DiscworldQuoter.class.getName();
+        var beanName = "discworldQuoter";
 
         // WHEN
         var beanDefinitions = scanner.scan(ROOT_MOCK_PACKAGE);
