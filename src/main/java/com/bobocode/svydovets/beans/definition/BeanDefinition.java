@@ -46,11 +46,4 @@ public class BeanDefinition {
     public void setBeanMethod(Method beanMethod) {
         this.beanMethod = beanMethod;
     }
-
-    @Override
-    public String toString() {
-        return "BeanDefinition{" +
-                "name='" + name + '\'' +
-                '}';
-    }
 }
