@@ -20,7 +20,7 @@ import com.bobocode.svydovets.exception.UnsupportedBeanTypeException;
 /**
  * A bean definition scanner that detects bean candidates in configuration classes.
  */
-public class DefaultBeanScanner implements BeanScanner {
+public class DefaultBeanScanner extends AbstractBeanScanner {
 
     /**
      * This method scans package to find classes annotated with the @Configuration annotation
@@ -66,7 +66,7 @@ public class DefaultBeanScanner implements BeanScanner {
      */
     private BeanDefinition getBeanDefinition(Class<?> confClass) {
         var confName = confClass.getAnnotation(Configuration.class).value().trim();
-        confName = confName.equals("") ? confClass.getSimpleName() : confName;
+        confName = confName.isEmpty() ? getTypeName(confClass) : confName;
         return new BeanDefinition(confName, confClass);
     }
 
@@ -83,7 +83,7 @@ public class DefaultBeanScanner implements BeanScanner {
             throw new UnsupportedBeanTypeException(
               String.format("Bean: %s with the return type VOID could not be added to the context", beanName));
         }
-        beanName = beanName.equals("") ? beanClass.getSimpleName() : beanName;
+        beanName = beanName.isEmpty() ? getTypeName(beanClass) : beanName;
         return new BeanDefinition(beanName, beanMethod.getDeclaringClass(), beanMethod);
     }
 }
