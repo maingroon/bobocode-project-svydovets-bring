@@ -65,7 +65,7 @@ public class DefaultBeanScanner extends AbstractBeanScanner {
      * @return a new instance of a BeanDefinition
      */
     private BeanDefinition getBeanDefinition(Class<?> confClass) {
-        var confName = confClass.getAnnotation(Configuration.class).value().trim();
+        var confName = confClass.getAnnotation(Configuration.class).value();
         confName = confName.isEmpty() ? getTypeName(confClass) : confName;
         return new BeanDefinition(confName, confClass);
     }
@@ -77,7 +77,7 @@ public class DefaultBeanScanner extends AbstractBeanScanner {
      * @return a new instance of a ConfigurationBeanDefinition
      */
     private BeanDefinition getBeanDefinition(Method beanMethod) {
-        var beanName = beanMethod.getAnnotation(Bean.class).value().trim();
+        var beanName = beanMethod.getAnnotation(Bean.class).value();
         var beanClass = beanMethod.getReturnType();
         if (beanClass.equals(Void.TYPE)) {
             throw new UnsupportedBeanTypeException(
