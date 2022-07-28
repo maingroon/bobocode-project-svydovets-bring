@@ -13,6 +13,7 @@ import com.bobocode.svydovets.annotation.Inject;
 import com.bobocode.svydovets.beans.factory.BeanFactory;
 import com.bobocode.svydovets.beans.factory.DefaultListableBeanFactory;
 import com.bobocode.svydovets.beans.scanner.ComponentBeanScanner;
+import com.bobocode.svydovets.exception.BeansException;
 import com.bobocode.svydovets.exception.NoSuchBeanDefinitionException;
 import com.bobocode.svydovets.exception.NoUniqueBeanDefinitionException;
 
@@ -29,7 +30,7 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
 
     @Override
     public <T> T getBean(Class<T> beanType) throws NoSuchBeanDefinitionException, NoUniqueBeanDefinitionException {
-        Objects.requireNonNull(beanType, "The beanType cannot be null!");
+        checkIsNotNullBeanType(beanType);
 
         var beans = beanContainer.values().stream()
           .filter(beanType::isInstance)
@@ -40,7 +41,7 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
               + "specify a beanName", beans.size(), beanType.getSimpleName()));
         }
         if (beans.isEmpty()) {
-            throw new NoSuchBeanDefinitionException(String.format("Bean with type %s is not found",
+            throw new NoSuchBeanDefinitionException(String.format("Bean with beanType %s is not found!",
               beanType.getSimpleName()));
         }
 
@@ -49,34 +50,27 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
 
     @Override
     public Object getBean(String beanName) throws NoSuchBeanDefinitionException {
-        Objects.requireNonNull(beanName, "The beanName cannot be null!");
-
-        if (StringUtils.isEmpty(beanName)) {
-            throw new IllegalArgumentException("Bean name is empty! Please specify the bean name.");
-        }
+        checkIsNotNullAndNotEmptyBeanName(beanName);
 
         var bean = beanContainer.get(beanName);
-        if (Objects.isNull(bean)) {
-            throw new NoSuchBeanDefinitionException(String.format("Bean with name %s is not found", beanName));
+        if (isBeanNotNull(bean, beanName)) {
+            return bean;
         }
 
-        return bean;
+        throw new BeansException(
+          String.format(
+            "Unexpected BeansException. Something was going wrong in attempt to get bean by beanName %s", beanName));
     }
 
     @Override
     public <T> T getBean(String beanName, Class<T> beanType) throws NoSuchBeanDefinitionException {
-        Objects.requireNonNull(beanName, "The beanName cannot be null!");
-        Objects.requireNonNull(beanType, "The beanType cannot be null!");
-        if (StringUtils.isEmpty(beanName)) {
-            throw new IllegalArgumentException("Bean name is empty! Please specify the bean name.");
-        }
+        checkIsNotNullAndNotEmptyBeanName(beanName);
+        checkIsNotNullBeanType(beanType);
 
         var bean = beanContainer.get(beanName);
-        if (bean == null) {
-            throw new NoSuchBeanDefinitionException(String.format("Bean with name %s is not found", beanName));
-        } else if (!ClassUtils.isAssignable(bean.getClass(), beanType)) {
+        if (isBeanNotNull(bean, beanName) && !ClassUtils.isAssignable(bean.getClass(), beanType)) {
             throw new NoSuchBeanDefinitionException(
-              String.format("Bean with name %s is not an instance of the %s. %s is the instance of the %s",
+              String.format("Bean with beanName %s is not an instance of the %s. %s is the instance of the %s",
                 beanName, beanType.getSimpleName(), beanName, bean.getClass().getSimpleName()));
         }
 
@@ -97,9 +91,9 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
     }
 
     private void scanAndCreate(String packageName) {
-        Objects.requireNonNull(packageName, "Package name cannot be null! Please specify the package name.");
+        Objects.requireNonNull(packageName, "The packageName cannot be null! Please specify the packageName.");
         if (StringUtils.isEmpty(packageName)) {
-            throw new IllegalArgumentException("Package name is empty! Please specify the package name.");
+            throw new IllegalArgumentException("The packageName is empty! Please specify the packageName.");
         }
 
         var componentNameToBeanDefinition = componentScanner.scan(packageName);
@@ -131,6 +125,24 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
             throw new RuntimeException(String.format("Unable to inject %s into %s. Fall with exception: %s",
               injectBean.getClass().getSimpleName(), bean.getClass().getSimpleName(), exception));
         }
+    }
+
+    private void checkIsNotNullAndNotEmptyBeanName(String beanName) {
+        Objects.requireNonNull(beanName, "The beanName cannot be null! Please specify beanName.");
+        if (StringUtils.isEmpty(beanName)) {
+            throw new IllegalArgumentException("The beanName is empty! Please specify beanName.");
+        }
+    }
+
+    private void checkIsNotNullBeanType(Class<?> beanType) {
+        Objects.requireNonNull(beanType, "The beanType cannot be null! Please specify beanType.");
+    }
+
+    private boolean isBeanNotNull(Object bean, String beanName) {
+        if (Objects.isNull(bean)) {
+            throw new NoSuchBeanDefinitionException(String.format("Bean with name %s is not found", beanName));
+        }
+        return true;
     }
 
 }

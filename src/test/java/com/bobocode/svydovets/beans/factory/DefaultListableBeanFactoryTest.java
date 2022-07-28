@@ -34,4 +34,5 @@ class DefaultListableBeanFactoryTest {
         assertTrue(beans.containsKey("hp"));
         assertTrue(beans.get("hp").getClass().isAssignableFrom(HarryPotterQuoter.class));
     }
+
 }
