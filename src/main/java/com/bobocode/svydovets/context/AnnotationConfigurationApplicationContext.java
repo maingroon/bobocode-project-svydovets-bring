@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.bobocode.svydovets.annotation.Inject;
@@ -28,6 +29,8 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
 
     @Override
     public <T> T getBean(Class<T> beanType) throws NoSuchBeanDefinitionException, NoUniqueBeanDefinitionException {
+        Objects.requireNonNull(beanType, "The beanType cannot be null!");
+
         var beans = beanContainer.values().stream()
           .filter(beanType::isInstance)
           .toList();
@@ -46,23 +49,37 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
 
     @Override
     public Object getBean(String beanName) throws NoSuchBeanDefinitionException {
+        Objects.requireNonNull(beanName, "The beanName cannot be null!");
+
+        if (StringUtils.isEmpty(beanName)) {
+            throw new IllegalArgumentException("Bean name is empty! Please specify the bean name.");
+        }
+
         var bean = beanContainer.get(beanName);
         if (Objects.isNull(bean)) {
             throw new NoSuchBeanDefinitionException(String.format("Bean with name %s is not found", beanName));
         }
+
         return bean;
     }
 
     @Override
     public <T> T getBean(String beanName, Class<T> beanType) throws NoSuchBeanDefinitionException {
+        Objects.requireNonNull(beanName, "The beanName cannot be null!");
+        Objects.requireNonNull(beanType, "The beanType cannot be null!");
+        if (StringUtils.isEmpty(beanName)) {
+            throw new IllegalArgumentException("Bean name is empty! Please specify the bean name.");
+        }
+
         var bean = beanContainer.get(beanName);
         if (bean == null) {
             throw new NoSuchBeanDefinitionException(String.format("Bean with name %s is not found", beanName));
-        } else if (!beanType.isInstance(beanType)) {
+        } else if (!ClassUtils.isAssignable(bean.getClass(), beanType)) {
             throw new NoSuchBeanDefinitionException(
               String.format("Bean with name %s is not an instance of the %s. %s is the instance of the %s",
                 beanName, beanType.getSimpleName(), beanName, bean.getClass().getSimpleName()));
         }
+
         return beanType.cast(bean);
     }
 
