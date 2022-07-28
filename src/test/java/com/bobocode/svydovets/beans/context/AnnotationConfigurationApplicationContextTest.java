@@ -3,13 +3,12 @@ package com.bobocode.svydovets.beans.context;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+
+import java.lang.reflect.Field;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
-import com.bobocode.svydovets.beans.scanner.ComponentBeanScanner;
 import com.bobocode.svydovets.beans.scanner.quoter.books.HarryPotter;
 import com.bobocode.svydovets.beans.scanner.quoter.books.HarryPotterQuoter;
 import com.bobocode.svydovets.context.AnnotationConfigurationApplicationContext;
@@ -26,12 +25,16 @@ public class AnnotationConfigurationApplicationContextTest {
       START_PACKAGE + "example.injection.failure.not.unique";
 
     @Test
-    void shouldCallScanWhenContextIsCreated() {
-        var componentBeanScanner = mock(ComponentBeanScanner.class);
+    @SuppressWarnings("unchecked")
+    void shouldContainsInitializedMapWithBeans() throws NoSuchFieldException, IllegalAccessException {
+        var context = new AnnotationConfigurationApplicationContext(MOCK_PACKAGE);
 
-        new AnnotationConfigurationApplicationContext(MOCK_PACKAGE);
+        Field beanContainerField = context.getClass().getDeclaredField("beanContainer");
+        assertNotNull(beanContainerField);
 
-        verify(componentBeanScanner, Mockito.times(1)).scan(MOCK_PACKAGE);
+        beanContainerField.setAccessible(true);
+        Map<String, Object> beanContainer = (Map<String, Object>) beanContainerField.get(context);
+        assertNotNull(beanContainer.get("hp"));
     }
 
     @Test

@@ -1,20 +1,16 @@
 package com.bobocode.svydovets.beans.factory;
 
-import com.bobocode.svydovets.beans.definition.BeanDefinition;
-import com.bobocode.svydovets.beans.scanner.ComponentBeanScanner;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.bobocode.svydovets.beans.definition.BeanDefinition;
+import com.bobocode.svydovets.beans.scanner.ComponentBeanScanner;
+import com.bobocode.svydovets.beans.scanner.quoter.books.HarryPotterQuoter;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DefaultListableBeanFactoryTest {
@@ -30,12 +26,12 @@ class DefaultListableBeanFactoryTest {
     }
 
     @Test
-    void shouldCreateNewBeansMapFromBeanDefinitionsMaps() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    void shouldCreateNewBeansMapFromBeanDefinitionsMaps() {
         // WHEN
         var beans = factory.createBeans(definitionMap);
 
         // THEN
         assertTrue(beans.containsKey("hp"));
-        assertEquals(2, beans.size());
+        assertTrue(beans.get("hp").getClass().isAssignableFrom(HarryPotterQuoter.class));
     }
 }
