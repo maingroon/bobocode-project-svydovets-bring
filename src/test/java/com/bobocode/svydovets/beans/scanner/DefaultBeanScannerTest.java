@@ -32,12 +32,15 @@ class DefaultBeanScannerTest {
     void scanSuccess() {
         var beanDefinitions = SCANNER.scan(PACKAGE);
         var beanName = "discworld";
+        var discworldQuoterBeanName = "discworldQuoter";
+        var harryPotterQuoterBeanName = "harryPotterQuoter";
+        var hpBeanDef = beanDefinitions.get(harryPotterQuoterBeanName);
+
         assertEquals(3, beanDefinitions.size());
         assertNotNull(beanDefinitions.get(beanName));
-        assertNull(beanDefinitions.get(DiscworldQuoter.class.getSimpleName()));
-        assertNotNull(beanDefinitions.get(HarryPotterQuoter.class.getSimpleName()));
+        assertNull(beanDefinitions.get(discworldQuoterBeanName));
+        assertNotNull(beanDefinitions.get(harryPotterQuoterBeanName));
         assertInstanceOf(BeanDefinition.class, beanDefinitions.get(beanName));
-        var hpBeanDef = beanDefinitions.get(HarryPotterQuoter.class.getSimpleName());
         assertNotNull(hpBeanDef.getBeanMethod());
         assertEquals(FantasyBookshelf.class, hpBeanDef.getBeanClass());
         assertEquals(HarryPotterQuoter.class, hpBeanDef.getBeanMethod().getReturnType());

@@ -8,11 +8,11 @@ import org.reflections.Reflections;
 import com.bobocode.svydovets.annotation.Component;
 import com.bobocode.svydovets.beans.definition.BeanDefinition;
 
-public class ComponentBeanScanner implements BeanScanner {
+public class ComponentBeanScanner extends AbstractBeanScanner {
 
     /**
      * This method scan package to find classes annotated with @Component annotation
-     * and returns bean definition for this classes.
+     * and returns bean definition for these classes.
      *
      * @param packageName - package name that will be scanned
      * @return - map of bean d
@@ -24,7 +24,7 @@ public class ComponentBeanScanner implements BeanScanner {
                 .stream()
                 .map(type -> {
                     var name = type.getAnnotation(Component.class).value();
-                    name = name.isEmpty() ? type.getName() : name;
+                    name = name.isEmpty() ? getTypeName(type) : name;
 
                     return new BeanDefinition(name, type);
                 })
