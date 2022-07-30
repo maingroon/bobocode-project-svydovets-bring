@@ -17,6 +17,14 @@ import com.bobocode.svydovets.exception.BeansException;
 import com.bobocode.svydovets.exception.NoSuchBeanDefinitionException;
 import com.bobocode.svydovets.exception.NoUniqueBeanDefinitionException;
 
+/**
+ * This class is the implementation of the {@link ApplicationContext} that provides realisation for annotation
+ * configuration.
+ * The {@link AnnotationConfigurationApplicationContext} contains Bring-Bean-Container {@link Map} and implementations
+ * of the methods of the {@link ApplicationContext} for provisioning Beans by beanName and beanType.
+ * This implementation takes control of lifecycle of Beans (implement Inversion of Control design principle), and
+ * implement Dependency Injection design pattern.
+ */
 public class AnnotationConfigurationApplicationContext implements ApplicationContext {
     private Map<String, Object> beanContainer;
     private final BeanFactory beanFactory;
@@ -28,6 +36,9 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
         init(packageName);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> T getBean(Class<T> beanType) throws NoSuchBeanDefinitionException, NoUniqueBeanDefinitionException {
         checkIsNotNullBeanType(beanType);
@@ -37,17 +48,20 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
           .toList();
 
         if (beans.size() > 1) {
-            throw new NoUniqueBeanDefinitionException(String.format("The Bring contains %s beans of the %s. Please, "
-              + "specify a beanName", beans.size(), beanType.getSimpleName()));
+            throw new NoUniqueBeanDefinitionException(String.format("The Bring contains [%s] beans of the '%s'. "
+              + "Please, specify a beanName", beans.size(), beanType.getSimpleName()));
         }
         if (beans.isEmpty()) {
-            throw new NoSuchBeanDefinitionException(String.format("Bean with beanType %s is not found!",
+            throw new NoSuchBeanDefinitionException(String.format("Bean with beanType '%s' is not found!",
               beanType.getSimpleName()));
         }
 
         return beanType.cast(beans.get(0));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Object getBean(String beanName) throws NoSuchBeanDefinitionException {
         checkIsNotNullAndNotEmptyBeanName(beanName);
@@ -59,9 +73,12 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
 
         throw new BeansException(
           String.format(
-            "Unexpected BeansException. Something was going wrong in attempt to get bean by beanName %s", beanName));
+            "Unexpected BeansException. Something was going wrong in attempt to get bean by beanName '%s'", beanName));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> T getBean(String beanName, Class<T> beanType) throws NoSuchBeanDefinitionException {
         checkIsNotNullAndNotEmptyBeanName(beanName);
@@ -70,18 +87,22 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
         var bean = beanContainer.get(beanName);
         if (isBeanNotNull(bean, beanName) && !ClassUtils.isAssignable(bean.getClass(), beanType)) {
             throw new NoSuchBeanDefinitionException(
-              String.format("Bean with beanName %s is not an instance of the %s. %s is the instance of the %s",
+              String.format("Bean with beanName '%s' is not an instance of the %s. '%s' is the instance of the %s",
                 beanName, beanType.getSimpleName(), beanName, bean.getClass().getSimpleName()));
         }
 
         return beanType.cast(bean);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    // TODO: should we return empty Map in case if we not find instances of beanType or throwException?
-    public Map<String, Object> getBeans(Class<?> beanType) throws NoSuchBeanDefinitionException {
+    public Map<String, Object> getBeans(Class<?> beanType) {
+        checkIsNotNullBeanType(beanType);
+
         return beanContainer.entrySet().stream()
-          .filter(entry -> beanType.isInstance(entry.getValue()))
+          .filter(entry -> ClassUtils.isAssignable(entry.getValue().getClass(), beanType))
           .collect(Collectors.toMap(Map.Entry::getKey, entry -> beanType.cast(entry.getValue())));
     }
 
@@ -122,7 +143,7 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
             field.setAccessible(true);
             field.set(bean, injectBean);
         } catch (IllegalAccessException exception) {
-            throw new RuntimeException(String.format("Unable to inject %s into %s. Fall with exception: %s",
+            throw new RuntimeException(String.format("Unable to inject '%s' into '%s'. Fall with exception: [%s]",
               injectBean.getClass().getSimpleName(), bean.getClass().getSimpleName(), exception));
         }
     }
@@ -140,7 +161,7 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
 
     private boolean isBeanNotNull(Object bean, String beanName) {
         if (Objects.isNull(bean)) {
-            throw new NoSuchBeanDefinitionException(String.format("Bean with name %s is not found", beanName));
+            throw new NoSuchBeanDefinitionException(String.format("Bean with name '%s' is not found", beanName));
         }
         return true;
     }
