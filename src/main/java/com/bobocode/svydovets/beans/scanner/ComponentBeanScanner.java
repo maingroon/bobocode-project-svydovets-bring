@@ -2,7 +2,9 @@ package com.bobocode.svydovets.beans.scanner;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ClassUtils;
@@ -43,37 +45,32 @@ public class ComponentBeanScanner extends AbstractBeanScanner {
 
     @Override
     public void fillDependsOn(Map<String, BeanDefinition> beanDefinitions) {
-        for (BeanDefinition beanDefinition : beanDefinitions.values()) {
-            Class<?> beanClass = beanDefinition.getBeanClass();
-            if (beanClass == null) {
-                continue;
-            }
-
-            beanDefinition.setDependsOn(findDependsOn(beanDefinitions, beanClass));
-        }
+        beanDefinitions.values().stream()
+                .filter(beanDefinition -> Objects.nonNull(beanDefinition.getBeanClass()))
+                .forEach(beanDefinition -> beanDefinition.setDependsOn(
+                        findDependsOn(beanDefinitions, beanDefinition.getBeanClass())));
     }
 
     private static String[] findDependsOn(Map<String, BeanDefinition> beanDefinitions, Class<?> beanClass) {
         var dependsOn = new ArrayList<>();
-        for (Field field : beanClass.getDeclaredFields()) {
-            if (!field.isAnnotationPresent(Inject.class)) {
-                continue;
-            }
 
-            String beanName = field.getAnnotation(Inject.class).value();
-            if (StringUtils.isNotEmpty(beanName)) {
-                findDepnesOnByName(beanDefinitions, dependsOn, beanName);
-            } else {
-                findDependsOnByClass(beanDefinitions, beanClass, dependsOn, field);
-            }
-        }
+        Arrays.stream(beanClass.getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(Inject.class))
+                .forEach(field -> {
+                    String beanName = field.getAnnotation(Inject.class).value();
+                    if (StringUtils.isNotEmpty(beanName)) {
+                        findDependsOnByName(beanDefinitions, dependsOn, beanName);
+                    } else {
+                        findDependsOnByClass(beanDefinitions, beanClass, dependsOn, field);
+                    }
+                });
 
         return dependsOn.toArray(new String[0]);
     }
 
-    private static void findDepnesOnByName(Map<String, BeanDefinition> beanDefinitions,
-                                           ArrayList<Object> dependsOn, String beanName) {
-        if (beanDefinitions.containsKey(beanName)) {
+    private static void findDependsOnByName(Map<String, BeanDefinition> beanDefinitions,
+                                            ArrayList<Object> dependsOn, String beanName) {
+        if (beanDefinitions.containsKey(beanName )) {
             dependsOn.add(beanName);
         } else {
             throw new NoSuchBeanDefinitionException(
