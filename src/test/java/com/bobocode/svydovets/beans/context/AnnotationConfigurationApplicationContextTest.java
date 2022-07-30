@@ -3,6 +3,7 @@ package com.bobocode.svydovets.beans.context;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -22,6 +23,8 @@ import com.bobocode.svydovets.beans.scanner.quoter.Quoter;
 import com.bobocode.svydovets.beans.scanner.quoter.books.DiscworldQuoter;
 import com.bobocode.svydovets.beans.scanner.quoter.books.HarryPotter;
 import com.bobocode.svydovets.beans.scanner.quoter.books.HarryPotterQuoter;
+import com.bobocode.svydovets.beans.scanner.quoter.bookshelfs.Bookshelf;
+import com.bobocode.svydovets.beans.scanner.quoter.bookshelfs.FantasyBookshelf;
 import com.bobocode.svydovets.context.AnnotationConfigurationApplicationContext;
 import com.bobocode.svydovets.context.ApplicationContext;
 import com.bobocode.svydovets.exception.NoSuchBeanDefinitionException;
@@ -88,19 +91,19 @@ public class AnnotationConfigurationApplicationContextTest {
 
     @ParameterizedTest
     @NullSource
-    void getBeanByName_shouldTrowExceptionWhenBeanNameIsNull(String beanName) {
+    void getBeanByName_shouldThrowExceptionWhenBeanNameIsNull(String beanName) {
         assertThrows(NullPointerException.class, () -> context.getBean(beanName));
     }
 
     @ParameterizedTest
     @EmptySource
-    void getBeanByName_shouldTrowExceptionWhenBeanNameIsEmpty(String beanName) {
+    void getBeanByName_shouldThrowExceptionWhenBeanNameIsEmpty(String beanName) {
         assertThrows(IllegalArgumentException.class, () -> context.getBean(beanName));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"beanNameThatNotContainsInTheBeanContainer"})
-    void getBeanByName_shouldTrowExceptionWhenBeanContainerDoesNotHaveRequiredBean(String beanName) {
+    void getBeanByName_shouldThrowExceptionWhenBeanContainerDoesNotHaveRequiredBean(String beanName) {
         assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(beanName));
     }
 
@@ -112,19 +115,19 @@ public class AnnotationConfigurationApplicationContextTest {
 
     @ParameterizedTest
     @NullSource
-    void getBeanByType_shouldTrowExceptionWhenBeanNameIsNull(Class<?> beanType) {
+    void getBeanByType_shouldThrowExceptionWhenBeanNameIsNull(Class<?> beanType) {
         assertThrows(NullPointerException.class, () -> context.getBean(beanType));
     }
 
     @ParameterizedTest
     @ValueSource(classes = {NotImplemented.class})
-    void getBeanByType_shouldTrowExceptionWhenBeanContainerDoesNotHaveRequiredBean(Class<?> beanType) {
+    void getBeanByType_shouldThrowExceptionWhenBeanContainerDoesNotHaveRequiredBean(Class<?> beanType) {
         assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(beanType));
     }
 
     @ParameterizedTest
     @ValueSource(classes = {Quoter.class})
-    void getBeanByType_shouldTrowExceptionWhenBeanContainerHaveMoreNameOneRequiredBean(Class<?> beanType) {
+    void getBeanByType_shouldThrowExceptionWhenBeanContainerHaveMoreNameOneRequiredBean(Class<?> beanType) {
         assertThrows(NoUniqueBeanDefinitionException.class, () -> context.getBean(beanType));
     }
 
@@ -136,7 +139,7 @@ public class AnnotationConfigurationApplicationContextTest {
 
     @ParameterizedTest
     @MethodSource("provideNullNamesWithBeenClasses")
-    void getBeanByNameAndType_shouldTrowExceptionWhenBeanNameIsNull(String beanName, Class<?> beanType) {
+    void getBeanByNameAndType_shouldThrowExceptionWhenBeanNameIsNull(String beanName, Class<?> beanType) {
         assertThrows(NullPointerException.class, () -> context.getBean(beanName, beanType));
     }
 
@@ -148,7 +151,7 @@ public class AnnotationConfigurationApplicationContextTest {
 
     @ParameterizedTest
     @MethodSource("provideNamesWithNullBeenClasses")
-    void getBeanByNameAndType_shouldTrowExceptionWhenBeanContainerDoesNotHaveRequiredBean(String beanName,
+    void getBeanByNameAndType_shouldThrowExceptionWhenBeanContainerDoesNotHaveRequiredBean(String beanName,
                                                                                           Class<?> beanType) {
         assertThrows(NullPointerException.class, () -> context.getBean(beanName, beanType));
     }
@@ -161,7 +164,7 @@ public class AnnotationConfigurationApplicationContextTest {
 
     @ParameterizedTest
     @MethodSource("provideEmptyNamesWithBeenClasses")
-    void getBeanByNameAndType_shouldTrowExceptionWhenBeanNameIsEmpty(String beanName, Class<?> beanType) {
+    void getBeanByNameAndType_shouldThrowExceptionWhenBeanNameIsEmpty(String beanName, Class<?> beanType) {
         assertThrows(IllegalArgumentException.class, () -> context.getBean(beanName, beanType));
     }
 
@@ -173,7 +176,7 @@ public class AnnotationConfigurationApplicationContextTest {
 
     @ParameterizedTest
     @MethodSource("provideNotRealNamesWithBeenClasses")
-    void getBeanByNameAndType_shouldTrowExceptionWhenBeanContainerDoesNotHaveBean(String beanName, Class<?> beanType) {
+    void getBeanByNameAndType_shouldThrowExceptionWhenBeanContainerDoesNotHaveBean(String beanName, Class<?> beanType) {
         assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(beanName, beanType));
     }
 
@@ -185,7 +188,7 @@ public class AnnotationConfigurationApplicationContextTest {
 
     @ParameterizedTest
     @MethodSource("provideNamesWithWrongBeenClasses")
-    void getBeanByNameAndType_shouldTrowExceptionWhenBeanContainerHaveBeanNameButTypeIsWrong(String beanName,
+    void getBeanByNameAndType_shouldThrowExceptionWhenBeanContainerHaveBeanNameButTypeIsWrong(String beanName,
                                                                                              Class<?> beanType) {
         assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(beanName, beanType));
     }
@@ -199,7 +202,7 @@ public class AnnotationConfigurationApplicationContextTest {
     @ParameterizedTest
     @MethodSource("provideNamesWithBeenClasses")
     void getBeanByNameAndType_shouldReturnBeanWhenBeanContainerHaveBeanNameAndTypeIsAssignable(String beanName,
-                                                                                          Class<?> beanType) {
+                                                                                               Class<?> beanType) {
         assertNotNull(context.getBean(beanName, beanType));
     }
 
@@ -210,5 +213,28 @@ public class AnnotationConfigurationApplicationContextTest {
           Arguments.of("hp", HarryPotterQuoter.class));
     }
 
-    //TODO: need to write tests for getBeans method, but first of all need to finish with realization
+    @ParameterizedTest
+    @NullSource
+    void getBeans_shouldThrowExceptionWhenPassedBeanTypeIsNull(Class<?> beanType) {
+        assertThrows(NullPointerException.class, () -> context.getBeans(beanType));
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {Bookshelf.class, FantasyBookshelf.class})
+    void getBeans_shouldReturnEmptyBeanMapWhenBeanContainerDoesNotHaveRequiredBean(Class<?> beanType) {
+        Map<String, Object> beans = context.getBeans(beanType);
+
+        assertNotNull(beans);
+        assertEquals(0, beans.size());
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {Quoter.class, HarryPotter.class, HarryPotterQuoter.class})
+    void getBeans_shouldReturnBeanMapWhenBeanContainerHaveRequiredBean(Class<?> beanType) {
+        Map<String, Object> beans = context.getBeans(beanType);
+
+        assertNotNull(beans);
+        assertTrue(beans.size() > 0);
+    }
+
 }
