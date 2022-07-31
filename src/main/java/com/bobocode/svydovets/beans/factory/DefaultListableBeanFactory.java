@@ -45,7 +45,7 @@ public class DefaultListableBeanFactory implements BeanFactory {
         var declaredClass = beanDefinition.getBeanClass();
         var declaredClassConfigValue = declaredClass.getAnnotation(Configuration.class).value().trim();
         var componentBeanName =
-          declaredClassConfigValue.isEmpty() ? StringUtils.uncapitalize(declaredClass.getSimpleName()) :
+          declaredClassConfigValue.isEmpty() ? StringUtils.uncapitalize(declaredClass.getName()) :
             declaredClassConfigValue;
         var declaredClassInstance = componentBeans.get(componentBeanName);
         if (beanDefinition.getBeanMethod().getParameters().length > 0) {

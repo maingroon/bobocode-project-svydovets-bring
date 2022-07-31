@@ -55,7 +55,11 @@ public class DefaultBeanScanner extends AbstractBeanScanner {
         } catch (IllegalStateException ex) {
             throw new NoUniqueBeanDefinitionException(ex.getMessage());
         }
+    }
 
+    @Override
+    public void fillDependsOn(Map<String, BeanDefinition> beanDefinitions) {
+        //TODO implement
     }
 
     /**

@@ -11,7 +11,6 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 
 import com.bobocode.svydovets.beans.definition.BeanDefinition;
-import com.bobocode.svydovets.beans.scanner.quoter.books.DiscworldQuoter;
 import com.bobocode.svydovets.beans.scanner.quoter.books.HarryPotterQuoter;
 import com.bobocode.svydovets.beans.scanner.quoter.bookshelfs.FantasyBookshelf;
 import com.bobocode.svydovets.exception.NoUniqueBeanDefinitionException;
@@ -33,7 +32,7 @@ class DefaultBeanScannerTest {
         var beanDefinitions = SCANNER.scan(PACKAGE);
         var beanName = "discworld";
         var discworldQuoterBeanName = "discworldQuoter";
-        var harryPotterQuoterBeanName = "harryPotterQuoter";
+        var harryPotterQuoterBeanName = HarryPotterQuoter.class.getName();
         var hpBeanDef = beanDefinitions.get(harryPotterQuoterBeanName);
 
         assertEquals(3, beanDefinitions.size());

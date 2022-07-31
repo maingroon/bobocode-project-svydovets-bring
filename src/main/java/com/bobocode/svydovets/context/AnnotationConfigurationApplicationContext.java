@@ -118,6 +118,7 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
         }
 
         var componentNameToBeanDefinition = componentScanner.scan(packageName);
+        componentScanner.fillDependsOn(componentNameToBeanDefinition);
         beanContainer = beanFactory.createBeans(componentNameToBeanDefinition);
     }
 
