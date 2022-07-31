@@ -15,7 +15,7 @@ import org.junit.jupiter.api.TestInstance;
 
 import com.bobocode.svydovets.beans.definition.BeanDefinition;
 import com.bobocode.svydovets.beans.scanner.ComponentBeanScanner;
-import com.bobocode.svydovets.beans.scanner.DefaultBeanScanner;
+import com.bobocode.svydovets.beans.scanner.ConfigurationBeanScanner;
 import com.bobocode.svydovets.beans.scanner.quoter.books.HarryPotterQuoter;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -30,7 +30,7 @@ class DefaultListableBeanFactoryTest {
     @BeforeAll
     public void setUp() {
         var componentsScanResult = new ComponentBeanScanner().scan(ROOT_MOCK_PACKAGE);
-        var configScanResult = new DefaultBeanScanner().scan(ROOT_MOCK_PACKAGE);
+        var configScanResult = new ConfigurationBeanScanner().scan(ROOT_MOCK_PACKAGE);
         definitionMap = Stream.of(componentsScanResult, configScanResult)
           .flatMap(map -> map.entrySet().stream())
           .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -52,7 +52,7 @@ class DefaultListableBeanFactoryTest {
 
     @Test
     void configDeclaredBeanWithConstructorInjectionFail() {
-        var configScanResult = new DefaultBeanScanner().scan(EXCEPTION_INJECT_MOCK_PACKAGE);
+        var configScanResult = new ConfigurationBeanScanner().scan(EXCEPTION_INJECT_MOCK_PACKAGE);
         assertThrowsExactly(UnsupportedOperationException.class, () -> factory.createBeans(configScanResult),
           "Creating bean instance with other injected beans is not yet supported");
     }

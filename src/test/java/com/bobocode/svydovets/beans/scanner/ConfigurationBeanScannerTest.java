@@ -8,15 +8,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collections;
 
+import com.bobocode.svydovets.beans.scanner.quoter.books.DuneQuoter;
 import org.junit.jupiter.api.Test;
 
 import com.bobocode.svydovets.beans.definition.BeanDefinition;
-import com.bobocode.svydovets.beans.scanner.quoter.books.HarryPotterQuoter;
 import com.bobocode.svydovets.beans.scanner.quoter.bookshelfs.FantasyBookshelf;
 import com.bobocode.svydovets.exception.NoUniqueBeanDefinitionException;
 import com.bobocode.svydovets.exception.UnsupportedBeanTypeException;
 
-class DefaultBeanScannerTest {
+class ConfigurationBeanScannerTest {
 
     private static final String PACKAGE = "com.bobocode.svydovets.beans.scanner.quoter";
 
@@ -25,24 +25,24 @@ class DefaultBeanScannerTest {
     private static final String PACKAGE_WITH_VOID_BEAN_EXCEPTION =
       "com.bobocode.svydovets.beans.scanner.exception.bookshelves.incorrecttype";
     private static final String INVALID_PACKAGE = "com.bobocode.svydovets.beans.scanner.quotermark";
-    private static final DefaultBeanScanner SCANNER = new DefaultBeanScanner();
+    private static final ConfigurationBeanScanner SCANNER = new ConfigurationBeanScanner();
 
     @Test
     void scanSuccess() {
         var beanDefinitions = SCANNER.scan(PACKAGE);
         var beanName = "discworld";
         var discworldQuoterBeanName = "discworldQuoter";
-        var harryPotterQuoterBeanName = HarryPotterQuoter.class.getName();
-        var hpBeanDef = beanDefinitions.get(harryPotterQuoterBeanName);
+        var duneQuoterBeanName = DuneQuoter.class.getName();
+        var duneQuoter = beanDefinitions.get(duneQuoterBeanName);
 
         assertEquals(3, beanDefinitions.size());
         assertNotNull(beanDefinitions.get(beanName));
         assertNull(beanDefinitions.get(discworldQuoterBeanName));
-        assertNotNull(beanDefinitions.get(harryPotterQuoterBeanName));
+        assertNotNull(beanDefinitions.get(duneQuoterBeanName));
         assertInstanceOf(BeanDefinition.class, beanDefinitions.get(beanName));
-        assertNotNull(hpBeanDef.getBeanMethod());
-        assertEquals(FantasyBookshelf.class, hpBeanDef.getBeanClass());
-        assertEquals(HarryPotterQuoter.class, hpBeanDef.getBeanMethod().getReturnType());
+        assertNotNull(duneQuoter.getBeanMethod());
+        assertEquals(FantasyBookshelf.class, duneQuoter.getBeanClass());
+        assertEquals(DuneQuoter.class, duneQuoter.getBeanMethod().getReturnType());
     }
 
     @Test
