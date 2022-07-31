@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.bobocode.svydovets.beans.factory.BeanFactory;
 import com.bobocode.svydovets.beans.factory.DefaultListableBeanFactory;
+import com.bobocode.svydovets.beans.scanner.BeanPostprocessorScanner;
 import com.bobocode.svydovets.beans.scanner.ComponentBeanScanner;
 import com.bobocode.svydovets.exception.BeansException;
 import com.bobocode.svydovets.exception.NoSuchBeanDefinitionException;
@@ -28,7 +29,8 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
     private final ComponentBeanScanner componentScanner;
 
     public AnnotationConfigurationApplicationContext(String packageName) {
-        this.beanFactory = new DefaultListableBeanFactory();
+        BeanPostprocessorScanner postprocessorScanner = new BeanPostprocessorScanner();
+        this.beanFactory = new DefaultListableBeanFactory(postprocessorScanner.scan(packageName));
         this.componentScanner = new ComponentBeanScanner();
         scanAndCreate(packageName);
     }
