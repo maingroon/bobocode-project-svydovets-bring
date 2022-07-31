@@ -1,7 +1,5 @@
 package com.bobocode.svydovets.context;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -9,7 +7,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.bobocode.svydovets.annotation.Inject;
 import com.bobocode.svydovets.beans.factory.BeanFactory;
 import com.bobocode.svydovets.beans.factory.DefaultListableBeanFactory;
 import com.bobocode.svydovets.beans.scanner.ComponentBeanScanner;
@@ -33,7 +30,7 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
     public AnnotationConfigurationApplicationContext(String packageName) {
         this.beanFactory = new DefaultListableBeanFactory();
         this.componentScanner = new ComponentBeanScanner();
-        init(packageName);
+        scanAndCreate(packageName);
     }
 
     /**
@@ -106,11 +103,6 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
           .collect(Collectors.toMap(Map.Entry::getKey, entry -> beanType.cast(entry.getValue())));
     }
 
-    private void init(String packageName) {
-        scanAndCreate(packageName);
-        injectAll();
-    }
-
     private void scanAndCreate(String packageName) {
         Objects.requireNonNull(packageName, "The packageName cannot be null! Please specify the packageName.");
         if (StringUtils.isEmpty(packageName)) {
@@ -120,33 +112,6 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
         var componentNameToBeanDefinition = componentScanner.scan(packageName);
         componentScanner.fillDependsOn(componentNameToBeanDefinition);
         beanContainer = beanFactory.createBeans(componentNameToBeanDefinition);
-    }
-
-    private void injectAll() {
-        beanContainer.values().forEach(bean ->
-          Arrays.stream(bean.getClass().getDeclaredFields())
-            .filter(field -> field.isAnnotationPresent(Inject.class))
-            .forEach(field -> inject(bean, field)));
-    }
-
-    private void inject(Object bean, Field field) {
-        Inject fieldAnnotation = field.getAnnotation(Inject.class);
-
-        if (StringUtils.isNotEmpty(fieldAnnotation.value())) {
-            injectToFiled(bean, field, getBean(fieldAnnotation.value()));
-        } else {
-            injectToFiled(bean, field, getBean(field.getType()));
-        }
-    }
-
-    private void injectToFiled(Object bean, Field field, Object injectBean) {
-        try {
-            field.setAccessible(true);
-            field.set(bean, injectBean);
-        } catch (IllegalAccessException exception) {
-            throw new RuntimeException(String.format("Unable to inject '%s' into '%s'. Fall with exception: [%s]",
-              injectBean.getClass().getSimpleName(), bean.getClass().getSimpleName(), exception));
-        }
     }
 
     private void checkIsNotNullAndNotEmptyBeanName(String beanName) {

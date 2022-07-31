@@ -1,6 +1,8 @@
 package com.bobocode.svydovets.beans.factory;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -10,11 +12,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.bobocode.svydovets.annotation.Configuration;
+import com.bobocode.svydovets.annotation.Inject;
 import com.bobocode.svydovets.beans.definition.BeanDefinition;
 import com.bobocode.svydovets.beans.exception.BeanInstantiationException;
 
 public class DefaultListableBeanFactory implements BeanFactory {
-
 
     /**
      * Create a new map of bean instances, from bean definitions.
@@ -34,10 +36,13 @@ public class DefaultListableBeanFactory implements BeanFactory {
             componentBeans))
           .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
 
-        return Stream.of(componentBeans, configurationDeclaredBeans)
+        Map<String, Object> beanMap = Stream.of(componentBeans, configurationDeclaredBeans)
           .flatMap(map -> map.entrySet().stream())
-          .collect(Collectors
-            .toMap(Map.Entry::getKey, Map.Entry::getValue));
+          .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        injectAll(beanMap);
+
+        return beanMap;
     }
 
     private static Pair<String, Object> createConfigurationDeclaredBean(BeanDefinition beanDefinition,
@@ -67,6 +72,33 @@ public class DefaultListableBeanFactory implements BeanFactory {
         } catch (InvocationTargetException | InstantiationException
                  | IllegalAccessException | NoSuchMethodException exception) {
             throw new BeanInstantiationException(exception.getMessage());
+        }
+    }
+
+    private void injectAll(Map<String, Object> beanMap) {
+        beanMap.values().forEach(bean ->
+          Arrays.stream(bean.getClass().getDeclaredFields())
+            .filter(field -> field.isAnnotationPresent(Inject.class))
+            .forEach(field -> inject(bean, field, beanMap)));
+    }
+
+    private void inject(Object bean, Field field, Map<String, Object> beanMap) {
+        Inject fieldAnnotation = field.getAnnotation(Inject.class);
+
+        if (StringUtils.isNotEmpty(fieldAnnotation.value())) {
+            injectToFiled(bean, field, beanMap.get(fieldAnnotation.value()));
+        } else {
+            injectToFiled(bean, field, beanMap.get(field.getType().getName()));
+        }
+    }
+
+    private void injectToFiled(Object bean, Field field, Object injectBean) {
+        try {
+            field.setAccessible(true);
+            field.set(bean, injectBean);
+        } catch (IllegalAccessException exception) {
+            throw new RuntimeException(String.format("Unable to inject '%s' into '%s'. Fall with exception: [%s]",
+              injectBean.getClass().getSimpleName(), bean.getClass().getSimpleName(), exception));
         }
     }
 }
