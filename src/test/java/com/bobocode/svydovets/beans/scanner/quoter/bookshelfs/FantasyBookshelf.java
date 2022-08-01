@@ -3,7 +3,7 @@ package com.bobocode.svydovets.beans.scanner.quoter.bookshelfs;
 import com.bobocode.svydovets.annotation.Bean;
 import com.bobocode.svydovets.annotation.Configuration;
 import com.bobocode.svydovets.beans.scanner.quoter.books.DiscworldQuoter;
-import com.bobocode.svydovets.beans.scanner.quoter.books.HarryPotterQuoter;
+import com.bobocode.svydovets.beans.scanner.quoter.books.DuneQuoter;
 
 @Configuration()
 public class FantasyBookshelf implements Bookshelf {
@@ -14,8 +14,8 @@ public class FantasyBookshelf implements Bookshelf {
     }
 
     @Bean
-    public HarryPotterQuoter getHarryPotterQuoter() {
-        return new HarryPotterQuoter();
+    public DuneQuoter getHarryPotterQuoter() {
+        return new DuneQuoter();
     }
 
 }

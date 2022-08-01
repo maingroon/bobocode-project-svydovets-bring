@@ -1,6 +1,5 @@
 package com.bobocode.svydovets.context;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
@@ -9,10 +8,11 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.bobocode.svydovets.annotation.Inject;
 import com.bobocode.svydovets.beans.factory.BeanFactory;
 import com.bobocode.svydovets.beans.factory.DefaultListableBeanFactory;
+import com.bobocode.svydovets.beans.scanner.BeanScanner;
 import com.bobocode.svydovets.beans.scanner.ComponentBeanScanner;
+import com.bobocode.svydovets.beans.scanner.ConfigurationBeanScanner;
 import com.bobocode.svydovets.exception.BeansException;
 import com.bobocode.svydovets.exception.NoSuchBeanDefinitionException;
 import com.bobocode.svydovets.exception.NoUniqueBeanDefinitionException;
@@ -28,12 +28,12 @@ import com.bobocode.svydovets.exception.NoUniqueBeanDefinitionException;
 public class AnnotationConfigurationApplicationContext implements ApplicationContext {
     private Map<String, Object> beanContainer;
     private final BeanFactory beanFactory;
-    private final ComponentBeanScanner componentScanner;
+    private final BeanScanner[] scanners;
 
     public AnnotationConfigurationApplicationContext(String packageName) {
         this.beanFactory = new DefaultListableBeanFactory();
-        this.componentScanner = new ComponentBeanScanner();
-        init(packageName);
+        this.scanners = new BeanScanner[]{new ComponentBeanScanner(), new ConfigurationBeanScanner()};
+        scanAndCreate(packageName);
     }
 
     /**
@@ -106,46 +106,17 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
           .collect(Collectors.toMap(Map.Entry::getKey, entry -> beanType.cast(entry.getValue())));
     }
 
-    private void init(String packageName) {
-        scanAndCreate(packageName);
-        injectAll();
-    }
-
     private void scanAndCreate(String packageName) {
         Objects.requireNonNull(packageName, "The packageName cannot be null! Please specify the packageName.");
         if (StringUtils.isEmpty(packageName)) {
             throw new IllegalArgumentException("The packageName is empty! Please specify the packageName.");
         }
 
-        var componentNameToBeanDefinition = componentScanner.scan(packageName);
+        var componentNameToBeanDefinition = Arrays.stream(scanners)
+                .flatMap(s -> s.scan(packageName).entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        Arrays.stream(scanners).forEach(s -> s.fillDependsOn(componentNameToBeanDefinition));
         beanContainer = beanFactory.createBeans(componentNameToBeanDefinition);
-    }
-
-    private void injectAll() {
-        beanContainer.values().forEach(bean ->
-          Arrays.stream(bean.getClass().getDeclaredFields())
-            .filter(field -> field.isAnnotationPresent(Inject.class))
-            .forEach(field -> inject(bean, field)));
-    }
-
-    private void inject(Object bean, Field field) {
-        Inject fieldAnnotation = field.getAnnotation(Inject.class);
-
-        if (StringUtils.isNotEmpty(fieldAnnotation.value())) {
-            injectToFiled(bean, field, getBean(fieldAnnotation.value()));
-        } else {
-            injectToFiled(bean, field, getBean(field.getType()));
-        }
-    }
-
-    private void injectToFiled(Object bean, Field field, Object injectBean) {
-        try {
-            field.setAccessible(true);
-            field.set(bean, injectBean);
-        } catch (IllegalAccessException exception) {
-            throw new RuntimeException(String.format("Unable to inject '%s' into '%s'. Fall with exception: [%s]",
-              injectBean.getClass().getSimpleName(), bean.getClass().getSimpleName(), exception));
-        }
     }
 
     private void checkIsNotNullAndNotEmptyBeanName(String beanName) {

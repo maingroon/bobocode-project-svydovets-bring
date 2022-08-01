@@ -9,6 +9,6 @@ public abstract class AbstractBeanScanner implements BeanScanner {
     protected String getTypeName(Class<?> type) {
         Objects.requireNonNull(type);
 
-        return StringUtils.uncapitalize(type.getSimpleName());
+        return StringUtils.uncapitalize(type.getName());
     }
 }
