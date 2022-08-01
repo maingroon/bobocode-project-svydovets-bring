@@ -20,11 +20,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import com.bobocode.svydovets.beans.example.injection.failure.no.bean.NotImplemented;
 import com.bobocode.svydovets.beans.scanner.quoter.Quoter;
-import com.bobocode.svydovets.beans.scanner.quoter.books.DiscworldQuoter;
-import com.bobocode.svydovets.beans.scanner.quoter.books.HarryPotter;
-import com.bobocode.svydovets.beans.scanner.quoter.books.HarryPotterQuoter;
-import com.bobocode.svydovets.beans.scanner.quoter.bookshelfs.Bookshelf;
-import com.bobocode.svydovets.beans.scanner.quoter.bookshelfs.FantasyBookshelf;
+import com.bobocode.svydovets.beans.scanner.quoter.books.*;
 import com.bobocode.svydovets.context.AnnotationConfigurationApplicationContext;
 import com.bobocode.svydovets.context.ApplicationContext;
 import com.bobocode.svydovets.exception.NoSuchBeanDefinitionException;
@@ -220,7 +216,7 @@ public class AnnotationConfigurationApplicationContextTest {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {Bookshelf.class, FantasyBookshelf.class})
+    @ValueSource(classes = {TheNameOfTheWindQuoter.class})
     void getBeans_shouldReturnEmptyBeanMapWhenBeanContainerDoesNotHaveRequiredBean(Class<?> beanType) {
         Map<String, Object> beans = context.getBeans(beanType);
 
@@ -229,7 +225,7 @@ public class AnnotationConfigurationApplicationContextTest {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {Quoter.class, HarryPotter.class, HarryPotterQuoter.class})
+    @ValueSource(classes = {Quoter.class, HarryPotter.class, DuneQuoter.class})
     void getBeans_shouldReturnBeanMapWhenBeanContainerHaveRequiredBean(Class<?> beanType) {
         Map<String, Object> beans = context.getBeans(beanType);
 

@@ -1,5 +1,6 @@
 package com.bobocode.svydovets.context;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -10,7 +11,9 @@ import org.apache.commons.lang3.StringUtils;
 import com.bobocode.svydovets.beans.factory.BeanFactory;
 import com.bobocode.svydovets.beans.factory.DefaultListableBeanFactory;
 import com.bobocode.svydovets.beans.scanner.BeanPostprocessorScanner;
+import com.bobocode.svydovets.beans.scanner.BeanScanner;
 import com.bobocode.svydovets.beans.scanner.ComponentBeanScanner;
+import com.bobocode.svydovets.beans.scanner.ConfigurationBeanScanner;
 import com.bobocode.svydovets.exception.BeansException;
 import com.bobocode.svydovets.exception.NoSuchBeanDefinitionException;
 import com.bobocode.svydovets.exception.NoUniqueBeanDefinitionException;
@@ -26,12 +29,12 @@ import com.bobocode.svydovets.exception.NoUniqueBeanDefinitionException;
 public class AnnotationConfigurationApplicationContext implements ApplicationContext {
     private Map<String, Object> beanContainer;
     private final BeanFactory beanFactory;
-    private final ComponentBeanScanner componentScanner;
+    private final BeanScanner[] scanners;
 
     public AnnotationConfigurationApplicationContext(String packageName) {
         BeanPostprocessorScanner postprocessorScanner = new BeanPostprocessorScanner();
         this.beanFactory = new DefaultListableBeanFactory(postprocessorScanner.scan(packageName));
-        this.componentScanner = new ComponentBeanScanner();
+        this.scanners = new BeanScanner[]{new ComponentBeanScanner(), new ConfigurationBeanScanner()};
         scanAndCreate(packageName);
     }
 
@@ -111,8 +114,10 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
             throw new IllegalArgumentException("The packageName is empty! Please specify the packageName.");
         }
 
-        var componentNameToBeanDefinition = componentScanner.scan(packageName);
-        componentScanner.fillDependsOn(componentNameToBeanDefinition);
+        var componentNameToBeanDefinition = Arrays.stream(scanners)
+                .flatMap(s -> s.scan(packageName).entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        Arrays.stream(scanners).forEach(s -> s.fillDependsOn(componentNameToBeanDefinition));
         beanContainer = beanFactory.createBeans(componentNameToBeanDefinition);
     }
 
