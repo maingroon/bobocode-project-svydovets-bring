@@ -14,8 +14,9 @@ public interface BeanPostProcessor {
     /**
      * Apply this postprocessor before any initialization callback
      * returned bean instance may be a wrapper the original
-     * default implementation returns the bean as it is
-     * @param bean - bean to modify
+     * default implementation returns the bean as it is.
+     *
+     * @param bean     - bean to modify
      * @param beanName - name of bean to modify
      * @return modified bean
      * @throws BeansException in case of errors
@@ -27,8 +28,9 @@ public interface BeanPostProcessor {
     /**
      * Apply this postprocessor after initialization callbacks
      * returned bean instance may be a wrapper the original
-     * default implementation returns the bean as it is
-     * @param bean - bean to modify
+     * default implementation returns the bean as it is.
+     *
+     * @param bean     - bean to modify
      * @param beanName - name of bean to modify
      * @return modified bean
      * @throws BeansException in case of errors

@@ -14,8 +14,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.bobocode.svydovets.annotation.Configuration;
 import com.bobocode.svydovets.annotation.Inject;
-import com.bobocode.svydovets.beans.definition.BeanDefinition;
 import com.bobocode.svydovets.beans.bpp.BeanPostProcessor;
+import com.bobocode.svydovets.beans.definition.BeanDefinition;
 import com.bobocode.svydovets.beans.exception.BeanInstantiationException;
 
 import lombok.Getter;
@@ -40,8 +40,8 @@ public class DefaultListableBeanFactory implements BeanFactory {
     @Override
     public Map<String, Object> createBeans(Map<String, BeanDefinition> definitionMap) {
         var componentBeans = definitionMap.values().stream()
-                .filter(bd -> Objects.isNull(bd.getBeanMethod()))
-                .collect(Collectors.toMap(BeanDefinition::getName, this::createComponentBean));
+          .filter(bd -> Objects.isNull(bd.getBeanMethod()))
+          .collect(Collectors.toMap(BeanDefinition::getName, this::createComponentBean));
 
         var configurationDeclaredBeans = definitionMap.values().stream()
           .filter(bd -> Objects.nonNull(bd.getBeanMethod()))
@@ -73,7 +73,8 @@ public class DefaultListableBeanFactory implements BeanFactory {
         try {
             var beanInstance = beanDefinition.getBeanMethod().invoke(declaredClassInstance,
               (Object[]) beanDefinition.getBeanMethod().getParameters());
-            var beanInstanceProcessedBeforeInitialization = applyPostprocessorsBeforeInitialization(beanInstance, componentBeanName);
+            var beanInstanceProcessedBeforeInitialization =
+              applyPostprocessorsBeforeInitialization(beanInstance, componentBeanName);
             return Pair.of(beanDefinition.getName(), beanInstanceProcessedBeforeInitialization);
         } catch (IllegalAccessException | InvocationTargetException ex) {
             throw new BeanInstantiationException("Could not instantiate a bean.", ex);
@@ -85,7 +86,7 @@ public class DefaultListableBeanFactory implements BeanFactory {
             Object originalBean = beanDefinition.getBeanClass().getConstructor().newInstance();
             return applyPostprocessorsBeforeInitialization(originalBean, beanDefinition.getName());
         } catch (InvocationTargetException | InstantiationException
-                 | IllegalAccessException | NoSuchMethodException exception) {
+            | IllegalAccessException | NoSuchMethodException exception) {
             throw new BeanInstantiationException(exception.getMessage());
         }
     }
@@ -95,7 +96,8 @@ public class DefaultListableBeanFactory implements BeanFactory {
         for (var postprocessor : beanPostProcessors) {
             result = postprocessor.postProcessBeforeInitialization(bean, beanName);
             if (result == null) {
-                log.info("Postprocessor {} returns null, all subsequent postprocessors will be skipped", postprocessor.getClass().getSimpleName());
+                log.info("Postprocessor {} returns null, all subsequent postprocessors will be skipped",
+                  postprocessor.getClass().getSimpleName());
                 break;
             }
         }
