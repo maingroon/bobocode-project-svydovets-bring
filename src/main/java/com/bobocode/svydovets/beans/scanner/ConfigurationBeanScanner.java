@@ -20,7 +20,7 @@ import com.bobocode.svydovets.exception.UnsupportedBeanTypeException;
 /**
  * A bean definition scanner that detects bean candidates in configuration classes.
  */
-public class DefaultBeanScanner extends AbstractBeanScanner {
+public class ConfigurationBeanScanner extends AbstractBeanScanner {
 
     /**
      * This method scans package to find classes annotated with the @Configuration annotation
