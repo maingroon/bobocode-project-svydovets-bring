@@ -40,9 +40,9 @@ class ConfigurationBeanScannerTest {
         assertNull(beanDefinitions.get(discworldQuoterBeanName));
         assertNotNull(beanDefinitions.get(duneQuoterBeanName));
         assertInstanceOf(BeanDefinition.class, beanDefinitions.get(beanName));
-        assertNotNull(duneQuoter.getBeanMethod());
+        assertNotNull(duneQuoter.getFactoryMethod());
         assertEquals(FantasyBookshelf.class, duneQuoter.getBeanClass());
-        assertEquals(DuneQuoter.class, duneQuoter.getBeanMethod().getReturnType());
+        assertEquals(DuneQuoter.class, duneQuoter.getFactoryMethod().getReturnType());
     }
 
     @Test

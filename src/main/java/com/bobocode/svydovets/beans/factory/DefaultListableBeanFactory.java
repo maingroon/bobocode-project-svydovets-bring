@@ -27,11 +27,11 @@ public class DefaultListableBeanFactory implements BeanFactory {
     @Override
     public Map<String, Object> createBeans(Map<String, BeanDefinition> definitionMap) {
         var componentBeans = definitionMap.values().stream()
-          .filter(bd -> Objects.isNull(bd.getBeanMethod()))
+          .filter(bd -> Objects.isNull(bd.getFactoryMethod()))
           .collect(Collectors.toMap(BeanDefinition::getName, DefaultListableBeanFactory::createComponentBean));
 
         var configurationDeclaredBeans = definitionMap.values().stream()
-          .filter(bd -> Objects.nonNull(bd.getBeanMethod()))
+          .filter(bd -> Objects.nonNull(bd.getFactoryMethod()))
           .map(confDeclaredBeanDefinitionEntry -> createConfigurationDeclaredBean(confDeclaredBeanDefinitionEntry,
             componentBeans))
           .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
@@ -53,13 +53,13 @@ public class DefaultListableBeanFactory implements BeanFactory {
           declaredClassConfigValue.isEmpty() ? StringUtils.uncapitalize(declaredClass.getName()) :
             declaredClassConfigValue;
         var declaredClassInstance = componentBeans.get(componentBeanName);
-        if (beanDefinition.getBeanMethod().getParameters().length > 0) {
+        if (beanDefinition.getFactoryMethod().getParameters().length > 0) {
             throw new UnsupportedOperationException(
               "Creating bean instance with other injected beans is not yet supported");
         }
         try {
-            var beanInstance = beanDefinition.getBeanMethod().invoke(declaredClassInstance,
-              (Object[]) beanDefinition.getBeanMethod().getParameters());
+            var beanInstance = beanDefinition.getFactoryMethod().invoke(declaredClassInstance,
+              (Object[]) beanDefinition.getFactoryMethod().getParameters());
             return Pair.of(beanDefinition.getName(), beanInstance);
         } catch (IllegalAccessException | InvocationTargetException ex) {
             throw new BeanInstantiationException("Could not instantiate a bean.", ex);

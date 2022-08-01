@@ -3,8 +3,10 @@ package com.bobocode.svydovets.beans.scanner;
 import static java.util.stream.Collectors.toMap;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -59,7 +61,19 @@ public class ConfigurationBeanScanner extends AbstractBeanScanner {
 
     @Override
     public void fillDependsOn(Map<String, BeanDefinition> beanDefinitions) {
-        //TODO implement
+        beanDefinitions.values().stream()
+                .filter(bd -> Objects.nonNull(bd.getFactoryMethod()))
+                .forEach(bd -> fillDependsOn(beanDefinitions, bd));
+    }
+
+    private void fillDependsOn(Map<String, BeanDefinition> beanDefinitions, BeanDefinition bd) {
+        var dependsOn = new ArrayList<>();
+
+        var parameterTypes = bd.getFactoryMethod().getParameterTypes();
+        Arrays.stream(parameterTypes)
+                .forEach(type -> dependsOn.add(findDependsOnByClass(beanDefinitions, bd.getBeanClass(), type)));
+
+        bd.setDependsOn(dependsOn.toArray(new String[0]));
     }
 
     /**

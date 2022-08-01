@@ -10,7 +10,11 @@ public class BeanDefinition {
 
     private String name;
     private Class<?> beanClass;
-    private Method beanMethod;
+
+    /**
+     * Factory method for creation bean instance.
+     */
+    private Method factoryMethod;
 
     /**
      * Contains bean names which this bean depends on.
@@ -22,10 +26,10 @@ public class BeanDefinition {
         this.beanClass = beanClass;
     }
 
-    public BeanDefinition(String name, Class<?> beanClass, Method beanMethod) {
+    public BeanDefinition(String name, Class<?> beanClass, Method factoryMethod) {
         this.name = name;
         this.beanClass = beanClass;
-        this.beanMethod = beanMethod;
+        this.factoryMethod = factoryMethod;
     }
 
     public String getName() {
@@ -44,12 +48,12 @@ public class BeanDefinition {
         this.beanClass = beanClass;
     }
 
-    public Method getBeanMethod() {
-        return beanMethod;
+    public Method getFactoryMethod() {
+        return factoryMethod;
     }
 
-    public void setBeanMethod(Method beanMethod) {
-        this.beanMethod = beanMethod;
+    public void setFactoryMethod(Method factoryMethod) {
+        this.factoryMethod = factoryMethod;
     }
 
     public String[] getDependsOn() {
