@@ -12,6 +12,11 @@ public class BeanDefinition {
     private Class<?> beanClass;
     private Method beanMethod;
 
+    /**
+     * Contains bean names which this bean depends on.
+     */
+    private String[] dependsOn;
+
     public BeanDefinition(String name, Class<?> beanClass) {
         this.name = name;
         this.beanClass = beanClass;
@@ -45,5 +50,13 @@ public class BeanDefinition {
 
     public void setBeanMethod(Method beanMethod) {
         this.beanMethod = beanMethod;
+    }
+
+    public String[] getDependsOn() {
+        return dependsOn;
+    }
+
+    public void setDependsOn(String[] dependsOn) {
+        this.dependsOn = dependsOn;
     }
 }
