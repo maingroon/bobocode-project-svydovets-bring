@@ -3,15 +3,17 @@ plugins {
     id 'jacoco'
     id 'checkstyle'
     id 'org.sonarqube' version '3.4.0.2513'
+    id 'maven-publish'
 }
+
+group = 'com.svydovets'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 jar {
     archiveBaseName = 'svydovets-bring'
 }
-
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
-targetCompatibility = '17'
 
 ext {
     junitVersion = '5.8.2'
@@ -79,4 +81,24 @@ jacocoTestReport {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        javaLibrary(MavenPublication) {
+            from project.components.java
+            groupId = project.group
+        }
+    }
+    repositories {
+
+        maven {
+            name = "GitHubPackages"
+            url = project.findProperty("github_packages_registry_url")
+            credentials {
+                username = System.getenv("GH_CI_USER")
+                password = System.getenv("GH_PACKAGES_UPLOAD_TOKEN")
+            }
+        }
+    }
 }
