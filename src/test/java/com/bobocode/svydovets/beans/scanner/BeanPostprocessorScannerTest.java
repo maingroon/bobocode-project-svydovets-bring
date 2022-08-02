@@ -23,7 +23,7 @@ class BeanPostprocessorScannerTest {
     @ParameterizedTest
     @NullSource
     void shouldThrowExceptionWhenPackageNameIsNull(String packageName) {
-        assertThrows(NullPointerException.class, () -> beanPostProcessorScanner.scan(packageName));
+        assertThrows(IllegalArgumentException.class, () -> beanPostProcessorScanner.scan(packageName));
     }
 
     @ParameterizedTest

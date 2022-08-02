@@ -19,17 +19,15 @@ import com.bobocode.svydovets.beans.definition.BeanDefinition;
 import com.bobocode.svydovets.beans.exception.BeanInstantiationException;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
+@RequiredArgsConstructor
 public class DefaultListableBeanFactory implements BeanFactory {
 
     @Getter
     private final Set<BeanPostProcessor> beanPostProcessors;
-
-    public DefaultListableBeanFactory(Set<BeanPostProcessor> beanPostProcessors) {
-        this.beanPostProcessors = beanPostProcessors;
-    }
 
     /**
      * Create a new map of bean instances, from bean definitions.

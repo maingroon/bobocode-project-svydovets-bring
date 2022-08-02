@@ -55,7 +55,7 @@ public class AnnotationConfigurationApplicationContextTest {
     @ParameterizedTest
     @NullSource
     void shouldThrowExceptionWhenPackageNameIsNull(String packageName) {
-        assertThrows(NullPointerException.class, () -> new AnnotationConfigurationApplicationContext(packageName));
+        assertThrows(IllegalArgumentException.class, () -> new AnnotationConfigurationApplicationContext(packageName));
     }
 
     @ParameterizedTest

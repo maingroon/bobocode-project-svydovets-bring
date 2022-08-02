@@ -1,7 +1,6 @@
 package com.bobocode.svydovets.beans.scanner;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,9 +21,9 @@ public class BeanPostprocessorScanner {
      * @return - map of bean definition
      */
     public Set<BeanPostProcessor> scan(String packageName) {
-        Objects.requireNonNull(packageName, "The packageName cannot be null! Please specify the packageName.");
         if (StringUtils.isEmpty(packageName)) {
-            throw new IllegalArgumentException("The packageName is empty! Please specify the packageName.");
+            throw new IllegalArgumentException(
+              "The packageName can not be null or empty! Please specify the packageName.");
         }
         Reflections reflections = new Reflections(packageName);
         Set<Class<? extends BeanPostProcessor>> postprocessorTypes = reflections.getSubTypesOf(BeanPostProcessor.class);
