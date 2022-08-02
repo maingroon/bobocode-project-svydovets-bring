@@ -76,3 +76,18 @@
 ## Simple example of code:
 > TODO: need to create a description with screenshots with step-by-step creation flow and description of why we are 
 > using it.
+
+## Install the svydovets-bring-framework:
+1. Add maven repository to your build.gradle.
+```
+repositories {
+  mavenCentral()
+  maven {
+    url = uri("https://maven.pkg.github.com/maingroon/svydovets-bring")
+   }
+}
+```
+2. Add dependency:
+```
+implementation 'com.svydovets:svydovets-bring-framework:0.0.1-SNAPSHOT'
+```
