@@ -62,6 +62,7 @@ sonarqube {
         property 'sonar.projectKey', 'maingroon_svydovets-bring'
         property 'sonar.organization', 'maingroon'
         property 'sonar.host.url', 'https://sonarcloud.io'
+        property 'sonar.coverage.jacoco.xmlReportPaths', 'build/jacoco/test/jacocoTestReport.xml'
     }
 }
 
