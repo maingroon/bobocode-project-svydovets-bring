@@ -12,15 +12,15 @@ import com.bobocode.svydovets.exception.NoUniqueBeanDefinitionException;
 
 public abstract class AbstractBeanScanner implements BeanScanner {
 
-    protected String getTypeName(Class<?> type) {
+    protected static String getTypeName(Class<?> type) {
         Objects.requireNonNull(type);
 
         return StringUtils.uncapitalize(type.getName());
     }
 
     protected static String findDependsOnByClass(Map<String, BeanDefinition> beanDefinitions, Class<?> beanClass,
-                                             Class<?> typeToInject) {
-        var typeName = StringUtils.uncapitalize(typeToInject.getName());
+                                                 Class<?> typeToInject) {
+        var typeName = getTypeName(typeToInject);
         if (beanDefinitions.containsKey(typeName)) {
             return typeName;
         }
@@ -42,7 +42,7 @@ public abstract class AbstractBeanScanner implements BeanScanner {
     }
 
     protected static String findDependsOnByName(Map<String, BeanDefinition> beanDefinitions, String beanName) {
-        if (beanDefinitions.containsKey(beanName )) {
+        if (beanDefinitions.containsKey(beanName)) {
             return beanName;
         } else {
             throw new NoSuchBeanDefinitionException(
