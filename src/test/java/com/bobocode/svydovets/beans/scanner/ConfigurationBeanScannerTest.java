@@ -31,15 +31,11 @@ class ConfigurationBeanScannerTest {
     void scanSuccess() {
         var beanDefinitions = SCANNER.scan(PACKAGE);
         var beanName = "discworld";
-<<<<<<<< HEAD:src/test/java/com/bobocode/svydovets/beans/scanner/ConfigurationBeanScannerTest.java
         var discworldQuoterBeanName = "discworldQuoter";
         var duneQuoterBeanName = DuneQuoter.class.getName();
         var duneQuoter = beanDefinitions.get(duneQuoterBeanName);
 
-        assertEquals(3, beanDefinitions.size());
-========
         assertEquals(4, beanDefinitions.size());
->>>>>>>> master:src/test/java/com/bobocode/svydovets/beans/scanner/DefaultBeanScannerTest.java
         assertNotNull(beanDefinitions.get(beanName));
         assertNull(beanDefinitions.get(discworldQuoterBeanName));
         assertNotNull(beanDefinitions.get(duneQuoterBeanName));
