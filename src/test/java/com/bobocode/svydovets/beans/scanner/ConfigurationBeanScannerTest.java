@@ -1,54 +1,67 @@
 package com.bobocode.svydovets.beans.scanner;
 
-import com.bobocode.svydovets.beans.definition.BeanDefinition;
-import com.bobocode.svydovets.beans.scanner.quoter.books.HarryPotterQuoter;
-import com.bobocode.svydovets.beans.scanner.quoter.bookshelfs.FantasyBookshelf;
-import com.bobocode.svydovets.beans.scanner.quoter.bookshelfs.RandomBookshelf;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.Collections;
+
+import com.bobocode.svydovets.beans.scanner.quoter.books.DuneQuoter;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.bobocode.svydovets.beans.definition.BeanDefinition;
+import com.bobocode.svydovets.beans.scanner.quoter.bookshelfs.FantasyBookshelf;
+import com.bobocode.svydovets.exception.NoUniqueBeanDefinitionException;
+import com.bobocode.svydovets.exception.UnsupportedBeanTypeException;
 
 class ConfigurationBeanScannerTest {
 
-    public static final String ROOT_MOCK_PACKAGE = "com.bobocode.svydovets.beans.scanner.quoter";
-    public static final String INVALID_PACKAGE_NAME = "com.bobocode.invalid.package";
-    private final ConfigurationBeanScanner scanner = new ConfigurationBeanScanner();
+    private static final String PACKAGE = "com.bobocode.svydovets.beans.scanner.quoter";
+
+    private static final String PACKAGE_WITH_DUPLICATE_EXCEPTION =
+      "com.bobocode.svydovets.beans.scanner.exception.bookshelves.duplicate";
+    private static final String PACKAGE_WITH_VOID_BEAN_EXCEPTION =
+      "com.bobocode.svydovets.beans.scanner.exception.bookshelves.incorrecttype";
+    private static final String INVALID_PACKAGE = "com.bobocode.svydovets.beans.scanner.quotermark";
+    private static final ConfigurationBeanScanner SCANNER = new ConfigurationBeanScanner();
 
     @Test
-    void shouldScanPackageAndCreateBeanDefinitionWithProvidedName() {
-        // GIVEN
-        var beanName = "fantasy";
+    void scanSuccess() {
+        var beanDefinitions = SCANNER.scan(PACKAGE);
+        var beanName = "discworld";
+<<<<<<<< HEAD:src/test/java/com/bobocode/svydovets/beans/scanner/ConfigurationBeanScannerTest.java
+        var discworldQuoterBeanName = "discworldQuoter";
+        var duneQuoterBeanName = DuneQuoter.class.getName();
+        var duneQuoter = beanDefinitions.get(duneQuoterBeanName);
 
-        // WHEN
-        var beanDefinitions = scanner.scan(ROOT_MOCK_PACKAGE);
-
-        // THEN
-        var fantasy = beanDefinitions.get(beanName);
-        assertEquals(beanName, "fantasy");
+        assertEquals(3, beanDefinitions.size());
+========
+        assertEquals(4, beanDefinitions.size());
+>>>>>>>> master:src/test/java/com/bobocode/svydovets/beans/scanner/DefaultBeanScannerTest.java
+        assertNotNull(beanDefinitions.get(beanName));
+        assertNull(beanDefinitions.get(discworldQuoterBeanName));
+        assertNotNull(beanDefinitions.get(duneQuoterBeanName));
+        assertInstanceOf(BeanDefinition.class, beanDefinitions.get(beanName));
+        assertNotNull(duneQuoter.getBeanMethod());
+        assertEquals(FantasyBookshelf.class, duneQuoter.getBeanClass());
+        assertEquals(DuneQuoter.class, duneQuoter.getBeanMethod().getReturnType());
     }
 
     @Test
-    void shouldScanPackageAndCreateBeanDefinitionWithDefaultName() {
-        // GIVEN
-        var beanName = RandomBookshelf.class.getName();
-
-        // WHEN
-        var beanDefinitions = scanner.scan(ROOT_MOCK_PACKAGE);
-
-        // THEN
-        var random = beanDefinitions.get(beanName);
-        assertEquals(RandomBookshelf.class, random.getBeanClass());
-        assertEquals(beanName, random.getName());
+    void scanDuplicateBenFail() {
+        assertThrows(NoUniqueBeanDefinitionException.class, () -> SCANNER.scan(PACKAGE_WITH_DUPLICATE_EXCEPTION));
     }
 
     @Test
-    void shouldReturnEmptyMapIfPackageIsInvalid() {
-        // WHEN
-        Map<String, BeanDefinition> beans = scanner.scan(INVALID_PACKAGE_NAME);
+    void scanInvalidPackage() {
+        var beanDefinitions = SCANNER.scan(INVALID_PACKAGE);
+        assertEquals(Collections.emptyMap(), beanDefinitions);
+    }
 
-        // THEN
-        assertEquals(0, beans.size());
+    @Test
+    void scanVoidBeanFail() {
+        assertThrows(UnsupportedBeanTypeException.class, () -> SCANNER.scan(PACKAGE_WITH_VOID_BEAN_EXCEPTION));
     }
 }
