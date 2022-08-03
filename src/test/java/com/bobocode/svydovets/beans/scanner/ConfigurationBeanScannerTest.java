@@ -8,10 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collections;
 
-import com.bobocode.svydovets.beans.scanner.quoter.books.DuneQuoter;
 import org.junit.jupiter.api.Test;
 
 import com.bobocode.svydovets.beans.definition.BeanDefinition;
+import com.bobocode.svydovets.beans.scanner.quoter.books.DuneQuoter;
 import com.bobocode.svydovets.beans.scanner.quoter.bookshelfs.FantasyBookshelf;
 import com.bobocode.svydovets.exception.NoUniqueBeanDefinitionException;
 import com.bobocode.svydovets.exception.UnsupportedBeanTypeException;
