@@ -8,9 +8,23 @@ import java.lang.reflect.Method;
  */
 public class BeanDefinition {
 
+    /**
+     * Name of the bean. It can be used to get it from {@link com.bobocode.svydovets.context.ApplicationContext}.
+     */
     private String name;
+    /**
+     * Class of the bean which will be created from this definition.
+     */
     private Class<?> beanClass;
-    private Method beanMethod;
+
+    /**
+     * Factory method for creation bean instance.
+     */
+    private Method factoryMethod;
+    /**
+     * Class of the configuration bean.
+     */
+    private Class<?> configurationClass;
 
     /**
      * Contains bean names which this bean depends on.
@@ -22,10 +36,11 @@ public class BeanDefinition {
         this.beanClass = beanClass;
     }
 
-    public BeanDefinition(String name, Class<?> beanClass, Method beanMethod) {
+    public BeanDefinition(String name, Class<?> configurationClass, Method factoryMethod, Class<?> beanClass) {
         this.name = name;
+        this.configurationClass = configurationClass;
+        this.factoryMethod = factoryMethod;
         this.beanClass = beanClass;
-        this.beanMethod = beanMethod;
     }
 
     public String getName() {
@@ -44,12 +59,12 @@ public class BeanDefinition {
         this.beanClass = beanClass;
     }
 
-    public Method getBeanMethod() {
-        return beanMethod;
+    public Method getFactoryMethod() {
+        return factoryMethod;
     }
 
-    public void setBeanMethod(Method beanMethod) {
-        this.beanMethod = beanMethod;
+    public void setFactoryMethod(Method factoryMethod) {
+        this.factoryMethod = factoryMethod;
     }
 
     public String[] getDependsOn() {
@@ -58,5 +73,13 @@ public class BeanDefinition {
 
     public void setDependsOn(String[] dependsOn) {
         this.dependsOn = dependsOn;
+    }
+
+    public Class<?> getConfigurationClass() {
+        return configurationClass;
+    }
+
+    public void setConfigurationClass(Class<?> configurationClass) {
+        this.configurationClass = configurationClass;
     }
 }

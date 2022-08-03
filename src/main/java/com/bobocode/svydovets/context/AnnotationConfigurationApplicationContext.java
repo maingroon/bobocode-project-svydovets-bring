@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.bobocode.svydovets.beans.factory.BeanFactory;
 import com.bobocode.svydovets.beans.factory.DefaultListableBeanFactory;
+import com.bobocode.svydovets.beans.scanner.BeanPostprocessorScanner;
 import com.bobocode.svydovets.beans.scanner.BeanScanner;
 import com.bobocode.svydovets.beans.scanner.ComponentBeanScanner;
 import com.bobocode.svydovets.beans.scanner.ConfigurationBeanScanner;
@@ -31,7 +32,8 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
     private final BeanScanner[] scanners;
 
     public AnnotationConfigurationApplicationContext(String packageName) {
-        this.beanFactory = new DefaultListableBeanFactory();
+        BeanPostprocessorScanner postprocessorScanner = new BeanPostprocessorScanner();
+        this.beanFactory = new DefaultListableBeanFactory(postprocessorScanner.scan(packageName));
         this.scanners = new BeanScanner[]{new ComponentBeanScanner(), new ConfigurationBeanScanner()};
         scanAndCreate(packageName);
     }

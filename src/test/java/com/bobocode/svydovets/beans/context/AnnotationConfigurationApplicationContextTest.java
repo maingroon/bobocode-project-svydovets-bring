@@ -9,7 +9,6 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import com.bobocode.svydovets.beans.scanner.quoter.books.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,6 +20,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import com.bobocode.svydovets.beans.example.injection.failure.no.bean.NotImplemented;
 import com.bobocode.svydovets.beans.scanner.quoter.Quoter;
+import com.bobocode.svydovets.beans.scanner.quoter.books.*;
 import com.bobocode.svydovets.context.AnnotationConfigurationApplicationContext;
 import com.bobocode.svydovets.context.ApplicationContext;
 import com.bobocode.svydovets.exception.NoSuchBeanDefinitionException;
@@ -55,7 +55,7 @@ public class AnnotationConfigurationApplicationContextTest {
     @ParameterizedTest
     @NullSource
     void shouldThrowExceptionWhenPackageNameIsNull(String packageName) {
-        assertThrows(NullPointerException.class, () -> new AnnotationConfigurationApplicationContext(packageName));
+        assertThrows(IllegalArgumentException.class, () -> new AnnotationConfigurationApplicationContext(packageName));
     }
 
     @ParameterizedTest
