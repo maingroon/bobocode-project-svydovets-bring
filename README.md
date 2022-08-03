@@ -78,16 +78,12 @@
 > using it.
 
 ## Install the svydovets-bring-framework:
-1. Add maven repository to your build.gradle. You need your github username and github packages read token.
+1. Add maven repository to your build.gradle.
 ```
 repositories {
   mavenCentral()
   maven {
     url = uri("https://maven.pkg.github.com/maingroon/svydovets-bring")
-      credentials {
-        username = System.getenv("GH_USER")
-        password = System.getenv("GH_PACKAGES_READ_TOKEN")
-      }
    }
 }
 ```
