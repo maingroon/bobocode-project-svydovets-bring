@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -13,10 +14,20 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.bobocode.svydovets.annotation.Configuration;
 import com.bobocode.svydovets.annotation.Inject;
+import com.bobocode.svydovets.beans.bpp.BeanPostProcessor;
 import com.bobocode.svydovets.beans.definition.BeanDefinition;
 import com.bobocode.svydovets.beans.exception.BeanInstantiationException;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
+@RequiredArgsConstructor
 public class DefaultListableBeanFactory implements BeanFactory {
+
+    @Getter
+    private final Set<BeanPostProcessor> beanPostProcessors;
 
     /**
      * Create a new map of bean instances, from bean definitions.
@@ -28,7 +39,7 @@ public class DefaultListableBeanFactory implements BeanFactory {
     public Map<String, Object> createBeans(Map<String, BeanDefinition> definitionMap) {
         var componentBeans = definitionMap.values().stream()
           .filter(bd -> Objects.isNull(bd.getFactoryMethod()))
-          .collect(Collectors.toMap(BeanDefinition::getName, DefaultListableBeanFactory::createComponentBean));
+          .collect(Collectors.toMap(BeanDefinition::getName, this::createComponentBean));
 
         var configurationDeclaredBeans = definitionMap.values().stream()
           .filter(bd -> Objects.nonNull(bd.getFactoryMethod()))
@@ -45,8 +56,8 @@ public class DefaultListableBeanFactory implements BeanFactory {
         return beanMap;
     }
 
-    private static Pair<String, Object> createConfigurationDeclaredBean(BeanDefinition beanDefinition,
-                                                                        Map<String, Object> componentBeans) {
+    private Pair<String, Object> createConfigurationDeclaredBean(BeanDefinition beanDefinition,
+                                                                 Map<String, Object> componentBeans) {
         var declaredClass = beanDefinition.getConfigurationClass();
         var declaredClassConfigValue = declaredClass.getAnnotation(Configuration.class).value().trim();
         var componentBeanName =
@@ -60,19 +71,35 @@ public class DefaultListableBeanFactory implements BeanFactory {
         try {
             var beanInstance = beanDefinition.getFactoryMethod().invoke(declaredClassInstance,
               (Object[]) beanDefinition.getFactoryMethod().getParameters());
-            return Pair.of(beanDefinition.getName(), beanInstance);
+            var beanInstanceProcessedBeforeInitialization =
+              applyPostprocessorsBeforeInitialization(beanInstance, componentBeanName);
+            return Pair.of(beanDefinition.getName(), beanInstanceProcessedBeforeInitialization);
         } catch (IllegalAccessException | InvocationTargetException ex) {
             throw new BeanInstantiationException("Could not instantiate a bean.", ex);
         }
     }
 
-    private static Object createComponentBean(BeanDefinition beanDefinition) {
+    private Object createComponentBean(BeanDefinition beanDefinition) {
         try {
-            return beanDefinition.getBeanClass().getConstructor().newInstance();
+            Object originalBean = beanDefinition.getBeanClass().getConstructor().newInstance();
+            return applyPostprocessorsBeforeInitialization(originalBean, beanDefinition.getName());
         } catch (InvocationTargetException | InstantiationException
-                 | IllegalAccessException | NoSuchMethodException exception) {
+            | IllegalAccessException | NoSuchMethodException exception) {
             throw new BeanInstantiationException(exception.getMessage());
         }
+    }
+
+    private Object applyPostprocessorsBeforeInitialization(Object bean, String beanName) {
+        var result = bean;
+        for (var postprocessor : beanPostProcessors) {
+            result = postprocessor.postProcessBeforeInitialization(bean, beanName);
+            if (result == null) {
+                log.info("Postprocessor {} returns null, all subsequent postprocessors will be skipped",
+                  postprocessor.getClass().getSimpleName());
+                break;
+            }
+        }
+        return result;
     }
 
     private void injectAll(Map<String, Object> beanMap) {
