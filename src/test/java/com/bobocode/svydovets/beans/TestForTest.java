@@ -8,7 +8,7 @@ public class TestForTest {
 
     @org.junit.jupiter.api.Test
     public void testReturnTwo() {
-        Test test = new Test();
+        var test = new Test();
         assertEquals(2, test.returnTwo());
     }
 
