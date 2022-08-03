@@ -102,6 +102,6 @@ public class ConfigurationBeanScanner extends AbstractBeanScanner {
               String.format("Bean: %s with the return type VOID could not be added to the context", beanName));
         }
         beanName = beanName.isEmpty() ? getTypeName(beanClass) : beanName;
-        return new BeanDefinition(beanName, beanMethod.getDeclaringClass(), beanMethod);
+        return new BeanDefinition(beanName, beanMethod.getDeclaringClass(), beanMethod, beanMethod.getReturnType());
     }
 }

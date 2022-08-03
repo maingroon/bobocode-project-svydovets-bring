@@ -19,6 +19,7 @@ import com.bobocode.svydovets.exception.UnsupportedBeanTypeException;
 class ConfigurationBeanScannerTest {
 
     private static final String PACKAGE = "com.bobocode.svydovets.beans.scanner.quoter";
+    private static final String PACKAGE_WITH_INJECTION = "com.bobocode.svydovets.beans.example.injection.bean";
 
     private static final String PACKAGE_WITH_DUPLICATE_EXCEPTION =
       "com.bobocode.svydovets.beans.scanner.exception.bookshelves.duplicate";
@@ -41,12 +42,12 @@ class ConfigurationBeanScannerTest {
         assertNotNull(beanDefinitions.get(duneQuoterBeanName));
         assertInstanceOf(BeanDefinition.class, beanDefinitions.get(beanName));
         assertNotNull(duneQuoter.getFactoryMethod());
-        assertEquals(FantasyBookshelf.class, duneQuoter.getBeanClass());
-        assertEquals(DuneQuoter.class, duneQuoter.getFactoryMethod().getReturnType());
+        assertEquals(FantasyBookshelf.class, duneQuoter.getConfigurationClass());
+        assertEquals(DuneQuoter.class, duneQuoter.getBeanClass());
     }
 
     @Test
-    void scanDuplicateBenFail() {
+    void scanDuplicateBeanFail() {
         assertThrows(NoUniqueBeanDefinitionException.class, () -> SCANNER.scan(PACKAGE_WITH_DUPLICATE_EXCEPTION));
     }
 
@@ -59,5 +60,25 @@ class ConfigurationBeanScannerTest {
     @Test
     void scanVoidBeanFail() {
         assertThrows(UnsupportedBeanTypeException.class, () -> SCANNER.scan(PACKAGE_WITH_VOID_BEAN_EXCEPTION));
+    }
+
+    @Test
+    void findDependsOn() {
+        // GIVEN
+        String aliceBeanName = "alice";
+        String outBeanName = "out";
+
+        // WHEN
+        var beanDefinitions = SCANNER.scan(PACKAGE_WITH_INJECTION);
+        SCANNER.fillDependsOn(beanDefinitions);
+
+        // THEN
+        assertEquals(3, beanDefinitions.size());
+
+        String[] aliceDependsOn = beanDefinitions.get(aliceBeanName).getDependsOn();
+        assertEquals(1, aliceDependsOn.length);
+        assertEquals(outBeanName, aliceDependsOn[0]);
+
+        assertEquals(0, beanDefinitions.get(outBeanName).getDependsOn().length);
     }
 }

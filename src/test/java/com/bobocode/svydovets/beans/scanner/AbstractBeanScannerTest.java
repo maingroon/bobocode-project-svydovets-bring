@@ -19,7 +19,7 @@ import static com.bobocode.svydovets.beans.scanner.AbstractBeanScanner.findDepen
 public class AbstractBeanScannerTest {
 
     @Test
-    public void shouldGetCorrectTypeName() {
+    void shouldGetCorrectTypeName() {
         // WHEN
         String typeName = AbstractBeanScanner.getTypeName(AbstractBeanScanner.class);
 
@@ -28,7 +28,7 @@ public class AbstractBeanScannerTest {
     }
 
     @Test
-    public void shouldFindDependsOnByName() {
+    void shouldFindDependsOnByName() {
         // GIVEN
         var map = new HashMap<String, BeanDefinition>();
         String fieldName = "hp";
@@ -42,7 +42,7 @@ public class AbstractBeanScannerTest {
     }
 
     @Test
-    public void shouldFindDependsOnByNameShould_throwNoSuchBean() {
+    void shouldFindDependsOnByNameShould_throwNoSuchBean() {
         // GIVEN
         var map = new HashMap<String, BeanDefinition>();
         String fieldName = "hp";
@@ -53,7 +53,7 @@ public class AbstractBeanScannerTest {
     }
 
     @Test
-    public void shouldFindDependsOnByClass_whenBeanHasCustomName() {
+    void shouldFindDependsOnByClass_whenBeanHasCustomName() {
         // GIVEN
         var map = new HashMap<String, BeanDefinition>();
         String fieldName = "hp";
@@ -67,7 +67,7 @@ public class AbstractBeanScannerTest {
     }
 
     @Test
-    public void shouldFindDependsOnByClass_whenBeanHasDefaultName() {
+    void shouldFindDependsOnByClass_whenBeanHasDefaultName() {
         // GIVEN
         var map = new HashMap<String, BeanDefinition>();
         String fieldName = HarryPotterQuoter.class.getName();
@@ -81,7 +81,7 @@ public class AbstractBeanScannerTest {
     }
 
     @Test
-    public void shouldFindDependsOnByClass_throwNoSuchBeen() {
+    void shouldFindDependsOnByClass_throwNoSuchBeen() {
         // GIVEN
         var map = new HashMap<String, BeanDefinition>();
 
@@ -91,7 +91,7 @@ public class AbstractBeanScannerTest {
     }
 
     @Test
-    public void shouldFindDependsOnByClass_throwNoUniqueBeen() {
+    void shouldFindDependsOnByClass_throwNoUniqueBeen() {
         // GIVEN
         var map = new HashMap<String, BeanDefinition>();
         map.put("hp", new BeanDefinition("hp", HarryPotterQuoter.class));
