@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -14,20 +14,10 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.bobocode.svydovets.annotation.Configuration;
 import com.bobocode.svydovets.annotation.Inject;
-import com.bobocode.svydovets.beans.bpp.BeanPostProcessor;
 import com.bobocode.svydovets.beans.definition.BeanDefinition;
 import com.bobocode.svydovets.beans.exception.BeanInstantiationException;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-
-@Log4j2
-@RequiredArgsConstructor
 public class DefaultListableBeanFactory implements BeanFactory {
-
-    @Getter
-    private final Set<BeanPostProcessor> beanPostProcessors;
 
     /**
      * Create a new map of bean instances, from bean definitions.
@@ -39,7 +29,7 @@ public class DefaultListableBeanFactory implements BeanFactory {
     public Map<String, Object> createBeans(Map<String, BeanDefinition> definitionMap) {
         var componentBeans = definitionMap.values().stream()
           .filter(bd -> Objects.isNull(bd.getFactoryMethod()))
-          .collect(Collectors.toMap(BeanDefinition::getName, this::createComponentBean));
+          .collect(Collectors.toMap(BeanDefinition::getName, DefaultListableBeanFactory::createComponentBean));
 
         var configurationDeclaredBeans = definitionMap.values().stream()
           .filter(bd -> Objects.nonNull(bd.getFactoryMethod()))
@@ -51,72 +41,159 @@ public class DefaultListableBeanFactory implements BeanFactory {
           .flatMap(map -> map.entrySet().stream())
           .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        injectAll(beanMap);
+        injectComponentBeans(beanMap);
+        injectConfigurationBeans(definitionMap, beanMap);
 
         return beanMap;
     }
 
-    private Pair<String, Object> createConfigurationDeclaredBean(BeanDefinition beanDefinition,
-                                                                 Map<String, Object> componentBeans) {
-        var declaredClass = beanDefinition.getConfigurationClass();
+
+//    private Object createBeanInstance(BeanDefinition beanDefinition, Map<String, Object> componentBeans,
+//                                      Map<String, BeanDefinition> definitionMap) {
+//        //instance was already created
+//        if (componentBeans.get(beanDefinition.getName()) != null) {
+//            var beanInstance = componentBeans.get(beanDefinition.getName());
+//        }
+//        //bean has no dependencies
+//        if (beanDefinition.getDependsOn() == null) {
+//            if (beanDefinition.getFactoryMethod() != null) {
+//                // bean declared in configuration file
+//                try {
+//                    var configurationClassInstance = getConfigurationClassInstance(beanDefinition, componentBeans);
+//                    var beanInstance = beanDefinition.getFactoryMethod().invoke(configurationClassInstance);
+//                } catch (IllegalAccessException | InvocationTargetException ex) {
+//                    throw new BeanInstantiationException("Could not instantiate a bean.", ex);
+//                }
+//            } else {
+//                // bean declared as a component
+//                try {
+//                    var beanInstance = beanDefinition.getBeanClass().getConstructor().newInstance();
+//                } catch (InvocationTargetException | InstantiationException
+//                         | IllegalAccessException | NoSuchMethodException exception) {
+//                    throw new BeanInstantiationException(exception.getMessage());
+//                }
+//            }
+//        }
+//        // bean has other dependencies
+//        else {
+//            for (String dependency : beanDefinition.getDependsOn()) {
+//                var dependencyBeanDefinition = definitionMap.get(dependency);
+//                var beanInstance = createBeanInstance(dependencyBeanDefinition, componentBeans, definitionMap);
+//            }
+//        }
+//        return null;
+//    }
+
+    private static Object getConfigurationClassInstance(BeanDefinition beanDefinition,
+                                                        Map<String, Object> componentBeans) {
+        var declaredClass = beanDefinition.getBeanClass();
         var declaredClassConfigValue = declaredClass.getAnnotation(Configuration.class).value().trim();
         var componentBeanName =
           declaredClassConfigValue.isEmpty() ? StringUtils.uncapitalize(declaredClass.getName()) :
             declaredClassConfigValue;
-        var declaredClassInstance = componentBeans.get(componentBeanName);
-        if (beanDefinition.getFactoryMethod().getParameters().length > 0) {
-            throw new UnsupportedOperationException(
-              "Creating bean instance with other injected beans is not yet supported");
-        }
+        return componentBeans.get(componentBeanName);
+    }
+
+    private static Pair<String, Object> createConfigurationDeclaredBean(BeanDefinition beanDefinition,
+                                                                        Map<String, Object> componentBeans) {
+        var configurationClassInstance = getConfigurationClassInstance(beanDefinition, componentBeans);
         try {
-            var beanInstance = beanDefinition.getFactoryMethod().invoke(declaredClassInstance,
-              (Object[]) beanDefinition.getFactoryMethod().getParameters());
-            var beanInstanceProcessedBeforeInitialization =
-              applyPostprocessorsBeforeInitialization(beanInstance, componentBeanName);
-            return Pair.of(beanDefinition.getName(), beanInstanceProcessedBeforeInitialization);
+
+            var beanInstance = beanDefinition.getFactoryMethod().invoke(configurationClassInstance,
+              new Object[beanDefinition.getFactoryMethod().getParameters().length]);
+//              (Object[]) beanDefinition.getFactoryMethod().getParameters());
+            return Pair.of(beanDefinition.getName(), beanInstance);
         } catch (IllegalAccessException | InvocationTargetException ex) {
-            throw new BeanInstantiationException("Could not instantiate a bean.", ex);
+            throw new BeanInstantiationException(
+              String.format("Could not instantiate a bean: %s", beanDefinition.getName()), ex);
+        } catch (IllegalArgumentException ex) {
+            throw new BeanInstantiationException(
+              String.format("Could not instantiate a bean: %s. Default constructor should be created.",
+                beanDefinition.getName()), ex);
         }
     }
 
-    private Object createComponentBean(BeanDefinition beanDefinition) {
+//    private Object getBeanInstanceOrCreateNew(Map<String, Object> createdBeans, String beanName,
+//                                              Map<String, BeanDefinition> definitionMap) {
+//        if (createdBeans.get(beanName) != null) {
+//            return createdBeans.get(beanName);
+//        }
+//        var beanDef = definitionMap.get(beanName);
+//
+//        if (beanDef.getFactoryMethod() != null) {
+//            if (beanDef.getDependsOn().length == 0) {
+//
+//            }
+//        } else {
+//
+//        }
+//    }
+
+//    private static List<Object> getMethodParameterObjects(Map<String, Object> componentBeans, String[] dependOnBeans) {
+//        for (String db : dependOnBeans) {
+//            var bean = componentBeans.get(db);
+//        }
+//    }
+
+
+//    private void test(Map<String, Object> componentBeans, String dependOnBean) {
+//        if (componentBeans.get(dependOnBean) != null) {
+//            return;
+//        }
+//        test(componentBeans, )
+//    }
+
+    private static Object createComponentBean(BeanDefinition beanDefinition) {
         try {
-            Object originalBean = beanDefinition.getBeanClass().getConstructor().newInstance();
-            return applyPostprocessorsBeforeInitialization(originalBean, beanDefinition.getName());
+            return beanDefinition.getBeanClass().getConstructor().newInstance();
         } catch (InvocationTargetException | InstantiationException
-            | IllegalAccessException | NoSuchMethodException exception) {
+                 | IllegalAccessException | NoSuchMethodException exception) {
             throw new BeanInstantiationException(exception.getMessage());
         }
     }
 
-    private Object applyPostprocessorsBeforeInitialization(Object bean, String beanName) {
-        var result = bean;
-        for (var postprocessor : beanPostProcessors) {
-            result = postprocessor.postProcessBeforeInitialization(bean, beanName);
-            if (result == null) {
-                log.info("Postprocessor {} returns null, all subsequent postprocessors will be skipped",
-                  postprocessor.getClass().getSimpleName());
-                break;
-            }
+//    private void injectAll(Map<String, Object> beanMap) {
+//        injectComponentBeans(beanMap);
+//        injectConfigurationBeans();
+////        beanMap.values().forEach(bean ->
+////          Arrays.stream(bean.getClass().getDeclaredFields())
+////            .filter(field -> field.isAnnotationPresent(Inject.class))
+////            .forEach(field -> inject(bean, field, beanMap)));
+//    }
+
+    private void inject(Object bean, Field field, Map<String, Object> beanMap) {
+        Inject fieldAnnotation = field.getAnnotation(Inject.class);
+
+        if (Objects.nonNull(fieldAnnotation) && StringUtils.isNotEmpty(fieldAnnotation.value())) {
+            injectToFiled(bean, field, beanMap.get(fieldAnnotation.value()));
+        } else {
+            injectToFiled(bean, field, beanMap.get(field.getType().getName()));
         }
-        return result;
     }
 
-    private void injectAll(Map<String, Object> beanMap) {
+    private void injectComponentBeans(Map<String, Object> beanMap) {
         beanMap.values().forEach(bean ->
           Arrays.stream(bean.getClass().getDeclaredFields())
             .filter(field -> field.isAnnotationPresent(Inject.class))
             .forEach(field -> inject(bean, field, beanMap)));
     }
 
-    private void inject(Object bean, Field field, Map<String, Object> beanMap) {
-        Inject fieldAnnotation = field.getAnnotation(Inject.class);
+    private void injectConfigurationBeans(Map<String, BeanDefinition> definitionMap, Map<String, Object> beanMap) {
+        definitionMap.values().stream()
+          .filter(beanDefinition -> beanDefinition.getDependsOn() != null)
+          .forEach(beanDefinition -> inject(beanDefinition, beanMap));
+    }
 
-        if (StringUtils.isNotEmpty(fieldAnnotation.value())) {
-            injectToFiled(bean, field, beanMap.get(fieldAnnotation.value()));
-        } else {
-            injectToFiled(bean, field, beanMap.get(field.getType().getName()));
-        }
+    private void inject(BeanDefinition beanDefinition, Map<String, Object> beanMap) {
+        var bean = beanMap.get(beanDefinition.getName());
+        var beanClass = bean.getClass();
+
+        var dependencyMap = Arrays.stream(beanDefinition.getDependsOn())
+          .collect(Collectors.toMap(Function.identity(), Function.identity()));
+
+        Arrays.stream(beanClass.getDeclaredFields())
+          .filter(field -> dependencyMap.get(field.getType().getName()) != null)
+          .forEach(field -> inject(bean, field, beanMap));
     }
 
     private void injectToFiled(Object bean, Field field, Object injectBean) {

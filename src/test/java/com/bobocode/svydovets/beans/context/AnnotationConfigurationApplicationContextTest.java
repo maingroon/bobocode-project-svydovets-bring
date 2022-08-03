@@ -41,6 +41,11 @@ public class AnnotationConfigurationApplicationContextTest {
         context = new AnnotationConfigurationApplicationContext(MOCK_PACKAGE);
     }
 
+
+    @Test
+    void testTMP() throws NoSuchFieldException {
+        Field beanContainerField = context.getClass().getDeclaredField("beanContainer");
+    }
     @Test
     @SuppressWarnings("unchecked")
     void shouldContainsInitializedMapWithBeans() throws NoSuchFieldException, IllegalAccessException {
