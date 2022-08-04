@@ -14,6 +14,7 @@ import com.bobocode.svydovets.beans.scanner.BeanPostprocessorScanner;
 import com.bobocode.svydovets.beans.scanner.BeanScanner;
 import com.bobocode.svydovets.beans.scanner.ComponentBeanScanner;
 import com.bobocode.svydovets.beans.scanner.ConfigurationBeanScanner;
+import com.bobocode.svydovets.beans.utils.BeanUtils;
 import com.bobocode.svydovets.exception.BeansException;
 import com.bobocode.svydovets.exception.NoSuchBeanDefinitionException;
 import com.bobocode.svydovets.exception.NoUniqueBeanDefinitionException;
@@ -32,10 +33,11 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
     private final BeanScanner[] scanners;
 
     public AnnotationConfigurationApplicationContext(String packageName) {
+        String validatedPackage = BeanUtils.validatePackageName(packageName);
         BeanPostprocessorScanner postprocessorScanner = new BeanPostprocessorScanner();
-        this.beanFactory = new DefaultListableBeanFactory(postprocessorScanner.scan(packageName));
+        this.beanFactory = new DefaultListableBeanFactory(postprocessorScanner.scan(validatedPackage));
         this.scanners = new BeanScanner[]{new ComponentBeanScanner(), new ConfigurationBeanScanner()};
-        scanAndCreate(packageName);
+        scanAndCreate(validatedPackage);
     }
 
     /**
@@ -109,11 +111,6 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
     }
 
     private void scanAndCreate(String packageName) {
-        Objects.requireNonNull(packageName, "The packageName cannot be null! Please specify the packageName.");
-        if (StringUtils.isEmpty(packageName)) {
-            throw new IllegalArgumentException("The packageName is empty! Please specify the packageName.");
-        }
-
         var componentNameToBeanDefinition = Arrays.stream(scanners)
                 .flatMap(s -> s.scan(packageName).entrySet().stream())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
