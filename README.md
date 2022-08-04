@@ -2,9 +2,18 @@
  The Bring is the [Inversion of Control (IoC) framework](https://en.wikipedia.org/wiki/Inversion_of_control#:~:text=In%20software%20engineering%2C%20inversion%20of,control%20from%20a%20generic%20framework.).  
  The Bring takes care of [Dependency Injection (DI)](https://en.wikipedia.org/wiki/Dependency_injection) into the Bean and manages full Bean lifecycle.  
 
-## Description for annotations: 
+<details>
+<summary> Description for annotations and ApplicationContext: </summary> 
+
+<details>
+<summary> @Configuration: </summary> 
+
 **[@Configuration](https://github.com/maingroon/svydovets-bring/blob/master/src/main/java/com/bobocode/svydovets/annotation/Configuration.java)**
 > This annotation is a marker that applicable to class and by this annotation the Bring is looking for beans configurations.
+</details>
+
+<details>
+<summary> @Bean: </summary> 
 
 **[@Bean](https://github.com/maingroon/svydovets-bring/blob/master/src/main/java/com/bobocode/svydovets/annotation/Bean.java)**
 > This annotation is usually applicable to POJO that cannot be market as **[@Component](https://github.com/maingroon/svydovets-bring/blob/master/src/main/java/com/bobocode/svydovets/annotation/Component.java)**
@@ -25,7 +34,10 @@
 >>
 >>> Full class  
 >>> ![bean_full](https://user-images.githubusercontent.com/55089853/180369802-cb99a79d-5a9f-414e-8d58-ab30d57fc246.png)
+</details>
 
+<details>
+<summary> @Component: </summary> 
 
 **[@Component](https://github.com/maingroon/svydovets-bring/blob/master/src/main/java/com/bobocode/svydovets/annotation/Component.java)**
 > This annotation is applicable to class. The Bring will create a bean and will manage all lifecycle of this bean.  
@@ -40,7 +52,10 @@
 >> annotation.
 >> In the case on the picture below the bean name will be *"hp""*
 >> ![component_name](https://user-images.githubusercontent.com/55089853/180457950-8b18416e-0f73-4fd4-af2c-b42d978e1ef9.png)
+</details>
 
+<details>
+<summary> @Inject: </summary> 
 
 **[@Inject](https://github.com/maingroon/svydovets-bring/blob/master/src/main/java/com/bobocode/svydovets/annotation/Inject.java)**
 > This annotation makes [Dependency Injection (DI)](https://en.wikipedia.org/wiki/Dependency_injection) into bean.   
@@ -62,32 +77,105 @@
 > be injected bean with this name'.
 >> ### Example:
 >> ![hp_injected_quoterpng](https://user-images.githubusercontent.com/55089853/180594031-483426c6-149c-47ee-a2df-051822a86fba.png)
+</details>
+
+<details>
+<summary> Bring-Bean-Container: </summary>
 
 ## Bring-Bean-Container
 > *Bring-Bean-Container* is a Map, that contains *bean name* and *Bean* and persists in the ApplicationContext realization.
 > TODO: should be added a screenshot
+</details>
+
+<details>
+<summary> ApplicationContext: </summary>
 
 ## Description for the [ApplicationContext](https://github.com/maingroon/svydovets-bring/blob/master/src/main/java/com/bobocode/svydovets/context/ApplicationContext.java): 
 > The *ApplicationContext* is the main interface in the Bring. It has realizations for some configurations of bean 
 > lifecycle regulations and control. Nowadays, the Bring contains only AnnotationConfigurationApplicationContext but 
 > we are on the way of evolving and will add other ConfigurationApplicationContext (for instance XmlConfigurationApplicationContext).
 > TODO: add more description for this and screenshots.
+</details>
+</details>
 
-## Simple example of code:
-> TODO: need to create a description with screenshots with step-by-step creation flow and description of why we are 
-> using it.
+<details>
+<summary> How to add dependency to gradle project: </summary>
 
-## Install the svydovets-bring-framework:
 1. Add maven repository to your build.gradle.
 ```
 repositories {
   mavenCentral()
   maven {
     url = uri("https://maven.pkg.github.com/maingroon/svydovets-bring")
+    credentials {
+            username = "your_email"
+            password = "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"
+        }
    }
 }
 ```
-2. Add dependency:
+2. Change *your_email* on your email from GitHub
+3. Add dependency:
 ```
 implementation 'com.svydovets:svydovets-bring-framework:0.0.1-SNAPSHOT'
 ```
+</details>
+
+<details>
+<summary> How to add dependency to maven project: </summary>
+
+1. Create in your .m2 (Windows example of this folder C:\Users\username.m2) folder setting.xml file. If the file is 
+already exists go to point 2.
+2. Add to the file:
+```
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+<activeProfiles>
+    <activeProfile>github</activeProfile>
+</activeProfiles>
+
+<profiles>
+    <profile>
+        <id>github</id>
+        <repositories>
+            <repository>
+                <id>central</id>
+                <url>https://repo1.maven.org/maven2</url>
+            </repository>
+            <repository>
+                <id>github</id>
+                <url>https://maven.pkg.github.com/maingroon/svydovets-bring</url>
+                <snapshots>
+                    <enabled>true</enabled>
+                </snapshots>
+            </repository>
+        </repositories>
+    </profile>
+</profiles>
+
+<servers>
+    <server>
+        <id>github</id>
+        <username>your_github_email</username>
+        <password>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</password>
+    </server>
+</servers>
+</settings>             
+```
+3. Replace your_github_email in this file on your email from the GitHub account
+4. Add dependency:
+```
+<dependency>
+       <groupId>com.svydovets</groupId>
+       <artifactId>svydovets-bring-framework</artifactId>
+       <version>0.0.1-SNAPSHOT</version>
+</dependency>
+```
+</details>
+
+[Here you can clone preconfigured maven Web project](https://github.com/khshanovskyi/preconfiguredMavenPtojectForWebApplication)
+
+[Here you can an example of using Bring framework](https://github.com/khshanovskyi/bring-nasa-pictures)
