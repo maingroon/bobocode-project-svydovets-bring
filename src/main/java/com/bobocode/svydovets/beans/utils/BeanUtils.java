@@ -16,8 +16,11 @@ public class BeanUtils {
         }
 
         var result = packageName;
-        if (packageName.contains("/") || packageName.contains("\\")) {
-            result = StringUtils.replaceEachRepeatedly(packageName, new String[] {"/", "\\"}, new String[] {"."});
+        if (packageName.contains("/")) {
+            result = StringUtils.replaceEachRepeatedly(packageName, new String[] {"/"}, new String[] {"."});
+        }
+        if (packageName.contains("\\")) {
+            result = StringUtils.replaceEachRepeatedly(packageName, new String[] {"\\"}, new String[] {"."});
         }
         return result;
     }
