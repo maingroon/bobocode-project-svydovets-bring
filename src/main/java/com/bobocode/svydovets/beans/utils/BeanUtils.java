@@ -9,6 +9,12 @@ public class BeanUtils {
     private BeanUtils() {
     }
 
+    /**
+     * Validate the input package which will be scanned and looked up for beans.
+     * in name contains slashed override them with dots, also perform empty & nonNull validation
+     * @param packageName the path to the beans package
+     * @return modified package name in case its contains slashes
+     */
     public static String validatePackageName(String packageName) {
         Objects.requireNonNull(packageName, "The packageName cannot be null! Please specify the packageName.");
         if (StringUtils.isEmpty(packageName)) {
