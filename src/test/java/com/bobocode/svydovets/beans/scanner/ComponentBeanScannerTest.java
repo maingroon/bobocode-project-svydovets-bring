@@ -3,6 +3,8 @@ package com.bobocode.svydovets.beans.scanner;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.bobocode.svydovets.beans.scanner.example.postconstruct.valid.ComponentWithPostConstruct1;
+import com.bobocode.svydovets.beans.scanner.example.postconstruct.valid.ComponentWithPostConstruct2;
 import com.bobocode.svydovets.exception.NoSuchBeanDefinitionException;
 import com.bobocode.svydovets.exception.NoUniqueBeanDefinitionException;
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +25,12 @@ public class ComponentBeanScannerTest {
             = "com.bobocode.svydovets.beans.scanner.exception.quoter.inject.nounique";
     private static final String NO_SUCH_BEAN_PACKAGE_NAME
             = "com.bobocode.svydovets.beans.scanner.exception.quoter.inject.nosuchbean";
+    private static final String POST_CONSTRUCT_WITH_ARGS_PACKAGE = "com.bobocode.svydovets.beans.scanner.example.postconstruct.args";
+    private static final String POST_CONSTRUCT_RETURNS_VALUES_PACKAGE = "com.bobocode.svydovets.beans.scanner.example.postconstruct.returns";
+    private static final String NO_COMPONENTS_WITH_POST_CONSTRUCT_PACKAGE = "com.bobocode.svydovets.beans.scanner.example.postconstruct.no";
+    private static final String POST_CONSTRUCT_METHOD_STATIC_PACKAGE = "com.bobocode.svydovets.beans.scanner.example.postconstruct.stat";
+    private static final String SEVERAL_POST_CONSTRUCT_METHODS_PACKAGE = "com.bobocode.svydovets.beans.scanner.example.postconstruct.not.one";
+    private static final String VALID_COMPONENTS_WITH_POST_CONSTRUCT_METHODS_PACKAGE = "com.bobocode.svydovets.beans.scanner.example.postconstruct.valid";
     private final ComponentBeanScanner scanner = new ComponentBeanScanner();
 
     @Test
@@ -96,5 +104,42 @@ public class ComponentBeanScannerTest {
         var harryPotterBookBeanDependsOn = beans.get("harryPotterBook").getDependsOn();
         assertEquals(harryPotterBookBeanDependsOn.length, 1);
         assertTrue(Arrays.asList(randomBeanDependsOn).contains("hp"));
+    }
+
+    @Test
+    void shouldThrowIllegalArgumentExceptionIfPostConstructHasArgs() {
+        assertThrows(IllegalArgumentException.class, () -> scanner.scan(POST_CONSTRUCT_WITH_ARGS_PACKAGE));
+    }
+
+    @Test
+    void shouldThrowIllegalArgumentExceptionIfPostConstructReturnsValue() {
+        assertThrows(IllegalArgumentException.class, () -> scanner.scan(POST_CONSTRUCT_RETURNS_VALUES_PACKAGE));
+    }
+
+    @Test
+    void shouldThrowIllegalArgumentExceptionIfPostConstructStatic() {
+        assertThrows(IllegalArgumentException.class, () -> scanner.scan(POST_CONSTRUCT_METHOD_STATIC_PACKAGE));
+    }
+
+    @Test
+    void shouldThrowIllegalArgumentExceptionIfBeanHasSeveralPostConstruct() {
+        assertThrows(IllegalArgumentException.class, () -> scanner.scan(SEVERAL_POST_CONSTRUCT_METHODS_PACKAGE));
+    }
+
+    @Test
+    void postConstructInBeanDefinitionShouldBeNullIfComponentHasNoPostConstruct() {
+        Map<String, BeanDefinition> beanDefinitionMap = scanner.scan(NO_COMPONENTS_WITH_POST_CONSTRUCT_PACKAGE);
+        assertTrue(beanDefinitionMap.values().stream().allMatch(bd -> bd.getPostConstructMethod() == null));
+    }
+
+    @Test
+    void beansDefinitionsShouldHavePostConstructMethodsIfTypesHave() throws NoSuchMethodException {
+        Map<String, BeanDefinition> beanDefinitionMap = scanner.scan(
+          VALID_COMPONENTS_WITH_POST_CONSTRUCT_METHODS_PACKAGE);
+        BeanDefinition beanDefinition1 = beanDefinitionMap.get("bean1");
+        BeanDefinition beanDefinition2 = beanDefinitionMap.get(ComponentWithPostConstruct2.class.getName());
+
+        assertEquals(beanDefinition1.getPostConstructMethod(), ComponentWithPostConstruct1.class.getMethod("postConstructMethod"));
+        assertEquals(beanDefinition2.getPostConstructMethod(), ComponentWithPostConstruct2.class.getMethod("postConstructMethod"));
     }
 }

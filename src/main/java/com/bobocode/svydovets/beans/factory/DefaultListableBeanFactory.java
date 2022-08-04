@@ -82,7 +82,12 @@ public class DefaultListableBeanFactory implements BeanFactory {
     private Object createComponentBean(BeanDefinition beanDefinition) {
         try {
             Object originalBean = beanDefinition.getBeanClass().getConstructor().newInstance();
-            return applyPostprocessorsBeforeInitialization(originalBean, beanDefinition.getName());
+            Object modifiedBean =
+              applyPostprocessorsBeforeInitialization(originalBean, beanDefinition.getName());
+            if (beanDefinition.getPostConstructMethod() != null) {
+                beanDefinition.getPostConstructMethod().invoke(modifiedBean);
+            }
+            return modifiedBean;
         } catch (InvocationTargetException | InstantiationException
             | IllegalAccessException | NoSuchMethodException exception) {
             throw new BeanInstantiationException(exception.getMessage());

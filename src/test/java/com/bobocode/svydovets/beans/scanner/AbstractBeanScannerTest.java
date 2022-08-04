@@ -32,7 +32,11 @@ public class AbstractBeanScannerTest {
         // GIVEN
         var map = new HashMap<String, BeanDefinition>();
         String fieldName = "hp";
-        map.put(fieldName, new BeanDefinition(fieldName, HarryPotterQuoter.class));
+        map.put(fieldName,
+          BeanDefinition.builder()
+            .name(fieldName)
+            .beanClass(HarryPotterQuoter.class)
+            .build());
 
         // WHEN
         String dependsOnByName = findDependsOnByName(map, fieldName);
@@ -57,7 +61,10 @@ public class AbstractBeanScannerTest {
         // GIVEN
         var map = new HashMap<String, BeanDefinition>();
         String fieldName = "hp";
-        map.put(fieldName, new BeanDefinition(fieldName, HarryPotterQuoter.class));
+        map.put(fieldName, BeanDefinition.builder()
+          .name(fieldName)
+          .beanClass(HarryPotterQuoter.class)
+          .build());
 
         // WHEN
         String dependsOnByClass = findDependsOnByClass(map, RandomQuoter.class, HarryPotterQuoter.class);
@@ -71,7 +78,10 @@ public class AbstractBeanScannerTest {
         // GIVEN
         var map = new HashMap<String, BeanDefinition>();
         String fieldName = HarryPotterQuoter.class.getName();
-        map.put(fieldName, new BeanDefinition(fieldName, HarryPotterQuoter.class));
+        map.put(fieldName, BeanDefinition.builder()
+          .name(fieldName)
+          .beanClass(HarryPotterQuoter.class)
+          .build());
 
         // WHEN
         String dependsOnByClass = findDependsOnByClass(map, RandomQuoter.class, HarryPotterQuoter.class);
@@ -94,8 +104,8 @@ public class AbstractBeanScannerTest {
     void shouldFindDependsOnByClass_throwNoUniqueBeen() {
         // GIVEN
         var map = new HashMap<String, BeanDefinition>();
-        map.put("hp", new BeanDefinition("hp", HarryPotterQuoter.class));
-        map.put("dune", new BeanDefinition("dune", DuneQuoter.class));
+        map.put("hp", BeanDefinition.builder().name("hp").beanClass(HarryPotterQuoter.class).build());
+        map.put("dune", BeanDefinition.builder().name("dune").beanClass(DuneQuoter.class).build());
 
 
         // WHEN-THEN
