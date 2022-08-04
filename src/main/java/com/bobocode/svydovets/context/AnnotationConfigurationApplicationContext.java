@@ -33,7 +33,7 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
     private final BeanScanner[] scanners;
 
     public AnnotationConfigurationApplicationContext(String packageName) {
-        var validatedPackage= BeanUtils.validatePackageName(packageName);
+        String validatedPackage = BeanUtils.validatePackageName(packageName);
         BeanPostprocessorScanner postprocessorScanner = new BeanPostprocessorScanner();
         this.beanFactory = new DefaultListableBeanFactory(postprocessorScanner.scan(validatedPackage));
         this.scanners = new BeanScanner[]{new ComponentBeanScanner(), new ConfigurationBeanScanner()};
