@@ -98,6 +98,7 @@ The Bring takes care of [Dependency Injection (DI)](https://en.wikipedia.org/wik
 <br>
 <details>
 <summary> How to add dependency to gradle project: </summary>
+
 1. Add maven repository to your build.gradle.
 ```
 repositories {
