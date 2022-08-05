@@ -79,6 +79,20 @@ class DefaultListableBeanFactoryTest {
     }
 
     @Test
+    void shouldCallPostProcessAfterInitializationAfterCreationBeans() {
+        BeanPostprocessor1 beanPostprocessor1 = Mockito.spy(BeanPostprocessor1.class);
+        BeanPostprocessor2 beanPostprocessor2 = Mockito.spy(BeanPostprocessor2.class);
+
+        factory = new DefaultListableBeanFactory(Set.of(beanPostprocessor1, beanPostprocessor2));
+        Map<String, Object> beans = factory.createBeans(new ComponentBeanScanner().scan(PACKAGE_WITH_POSTPROCESSORS));
+
+        for (Map.Entry<String, Object> entry : beans.entrySet()) {
+            Mockito.verify(beanPostprocessor1, Mockito.times(1)).postProcessAfterInitialization(entry.getValue(), entry.getKey());
+            Mockito.verify(beanPostprocessor2, Mockito.times(1)).postProcessAfterInitialization(entry.getValue(), entry.getKey());
+        }
+    }
+
+    @Test
     void postConstructMethodShouldInitializeValues() {
 
         factory = new DefaultListableBeanFactory(Collections.EMPTY_SET);
