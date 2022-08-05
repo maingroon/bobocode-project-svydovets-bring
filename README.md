@@ -99,16 +99,21 @@ The Bring takes care of [Dependency Injection (DI)](https://en.wikipedia.org/wik
 <details>
 <summary> How to add dependency to gradle project: </summary>
 
-1. Add maven repository to your build.gradle.
+## Simple example of code:
+> TODO: need to create a description with screenshots with step-by-step creation flow and description of why we are 
+> using it.
+
+## Install the svydovets-bring-framework:
+1. Add maven repository to your build.gradle. You need your github username and github packages read token.
 ```
 repositories {
   mavenCentral()
   maven {
     url = uri("https://maven.pkg.github.com/maingroon/svydovets-bring")
-    credentials {
-            username = "your_email"
-            password = "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"
-        }
+      credentials {
+        username = System.getenv("GH_USER")
+        password = System.getenv("GH_PACKAGES_READ_TOKEN")
+      }
    }
 }
 ```
@@ -155,7 +160,7 @@ implementation 'com.svydovets:svydovets-bring-framework:0.0.1-SNAPSHOT'
     <server>
         <id>github</id>
         <username>your_github_email</username>
-        <password>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</password>
+        <password>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</password>
     </server>
 </servers>
 </settings>             
