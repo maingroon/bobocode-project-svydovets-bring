@@ -18,8 +18,8 @@ import com.bobocode.svydovets.annotation.Configuration;
 import com.bobocode.svydovets.annotation.Inject;
 import com.bobocode.svydovets.beans.bpp.BeanPostProcessor;
 import com.bobocode.svydovets.beans.definition.BeanDefinition;
-import com.bobocode.svydovets.exception.BeanInstantiationException;
 import com.bobocode.svydovets.exception.BeanInjectionException;
+import com.bobocode.svydovets.exception.BeanInstantiationException;
 import com.bobocode.svydovets.exception.NoSuchBeanException;
 import com.bobocode.svydovets.exception.NoUniqueBeanException;
 
