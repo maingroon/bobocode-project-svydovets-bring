@@ -1,6 +1,8 @@
-# Bring, svydovets team
+# The Bring, svydovets team
 The Bring is the [Inversion of Control (IoC) framework](https://en.wikipedia.org/wiki/Inversion_of_control#:~:text=In%20software%20engineering%2C%20inversion%20of,control%20from%20a%20generic%20framework.).  
 The Bring takes care of [Dependency Injection (DI)](https://en.wikipedia.org/wiki/Dependency_injection) into the Bean and manages full Bean lifecycle.
+
+#### NOTE: THE BRING FRAMEWORK IS WRITTEN ON JAVA 17 
 
 <details>
 <summary> Description for annotations and ApplicationContext: </summary> 
@@ -79,6 +81,7 @@ The Bring takes care of [Dependency Injection (DI)](https://en.wikipedia.org/wik
 >> ### Example:
 >>![image](https://user-images.githubusercontent.com/12940663/183023353-a9c8c638-b335-451d-be4c-01c6914df4a9.png)
 </details>
+<br>
 <details>
 <summary> ApplicationContext: </summary>
 
@@ -105,7 +108,7 @@ The Bring takes care of [Dependency Injection (DI)](https://en.wikipedia.org/wik
 </details>
 <br>
 <details>
-<summary> How to add dependency to gradle project: </summary>
+<summary> How to add dependency to Gradle project: </summary>
 
 1. Add maven repository to your build.gradle. You need your github username and github packages read token.
 ```
@@ -114,14 +117,16 @@ repositories {
   maven {
     url = uri("https://maven.pkg.github.com/maingroon/svydovets-bring")
       credentials {
-        username = System.getenv("GH_USER")
-        password = System.getenv("GH_PACKAGES_READ_TOKEN")
+        username = 'your_github_email'
+        password = 'bring_token'
       }
    }
 }
 ```
-2. Change *your_email* on your email from GitHub
-3. Add dependency:
+2. Replace *your_github_emailt* on your email from the GitHub account
+3. [Contact Bring team and ask a token for downloading dependency](https://github.com/khshanovskyi/get_token/blob/main/README.md)
+4. Replace *bring_token* on provided from Bring team
+5. Add dependency:
 ```
 implementation 'com.svydovets:svydovets-bring-framework:0.0.1-SNAPSHOT'
 ```
@@ -163,18 +168,20 @@ implementation 'com.svydovets:svydovets-bring-framework:0.0.1-SNAPSHOT'
     <server>
         <id>github</id>
         <username>your_github_email</username>
-        <password>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</password>
+        <password>bring_token</password>
     </server>
 </servers>
 </settings>             
 ```
-3. Replace your_github_email in this file on your email from the GitHub account
-4. Add dependency:
+3. Replace *your_github_email* in this file on your email from the GitHub account
+4. [Contact Bring team and ask a token for downloading dependency](https://github.com/khshanovskyi/get_token/blob/main/README.md)
+5. Replace *bring_token* on provided from Bring team
+6. Add dependency:
 ```
 <dependency>
-       <groupId>com.svydovets</groupId>
-       <artifactId>svydovets-bring-framework</artifactId>
-       <version>0.0.1-SNAPSHOT</version>
+     <groupId>com.svydovets</groupId>
+     <artifactId>svydovets-bring-framework</artifactId>
+     <version>0.0.1-SNAPSHOT</version>
 </dependency>
 ```
 </details>
