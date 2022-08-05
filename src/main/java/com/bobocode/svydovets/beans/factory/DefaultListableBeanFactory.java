@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -17,6 +18,9 @@ import com.bobocode.svydovets.annotation.Inject;
 import com.bobocode.svydovets.beans.bpp.BeanPostProcessor;
 import com.bobocode.svydovets.beans.definition.BeanDefinition;
 import com.bobocode.svydovets.beans.exception.BeanInstantiationException;
+import com.bobocode.svydovets.exception.BeanInjectionException;
+import com.bobocode.svydovets.exception.NoSuchBeanException;
+import com.bobocode.svydovets.exception.NoUniqueBeanException;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +55,8 @@ public class DefaultListableBeanFactory implements BeanFactory {
           .flatMap(map -> map.entrySet().stream())
           .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        injectAll(beanMap);
+        injectComponentBeans(beanMap);
+        injectConfigurationBeans(definitionMap, beanMap);
 
         return beanMap;
     }
@@ -64,13 +69,9 @@ public class DefaultListableBeanFactory implements BeanFactory {
           declaredClassConfigValue.isEmpty() ? StringUtils.uncapitalize(declaredClass.getName()) :
             declaredClassConfigValue;
         var declaredClassInstance = componentBeans.get(componentBeanName);
-        if (beanDefinition.getFactoryMethod().getParameters().length > 0) {
-            throw new UnsupportedOperationException(
-              "Creating bean instance with other injected beans is not yet supported");
-        }
         try {
             var beanInstance = beanDefinition.getFactoryMethod().invoke(declaredClassInstance,
-              (Object[]) beanDefinition.getFactoryMethod().getParameters());
+              new Object[beanDefinition.getFactoryMethod().getParameters().length]);
             var beanInstanceProcessedBeforeInitialization =
               applyPostprocessorsBeforeInitialization(beanInstance, componentBeanName);
             return Pair.of(beanDefinition.getName(), beanInstanceProcessedBeforeInitialization);
@@ -89,8 +90,10 @@ public class DefaultListableBeanFactory implements BeanFactory {
             }
             return modifiedBean;
         } catch (InvocationTargetException | InstantiationException
-            | IllegalAccessException | NoSuchMethodException exception) {
-            throw new BeanInstantiationException(exception.getMessage());
+                 | IllegalAccessException | NoSuchMethodException exception) {
+            throw new BeanInstantiationException(
+              String.format("Could not instantiate a bean: %s. Default constructor should be created.",
+                beanDefinition.getName()), exception);
         }
     }
 
@@ -98,7 +101,7 @@ public class DefaultListableBeanFactory implements BeanFactory {
         var result = bean;
         for (var postprocessor : beanPostProcessors) {
             result = postprocessor.postProcessBeforeInitialization(bean, beanName);
-            if (result == null) {
+            if (Objects.isNull(result)) {
                 log.info("Postprocessor {} returns null, all subsequent postprocessors will be skipped",
                   postprocessor.getClass().getSimpleName());
                 break;
@@ -107,21 +110,67 @@ public class DefaultListableBeanFactory implements BeanFactory {
         return result;
     }
 
-    private void injectAll(Map<String, Object> beanMap) {
+    private void injectComponentBeans(Map<String, Object> beanMap) {
         beanMap.values().forEach(bean ->
           Arrays.stream(bean.getClass().getDeclaredFields())
             .filter(field -> field.isAnnotationPresent(Inject.class))
             .forEach(field -> inject(bean, field, beanMap)));
     }
 
+    private void injectConfigurationBeans(Map<String, BeanDefinition> definitionMap, Map<String, Object> beanMap) {
+        definitionMap.values().stream()
+          .filter(beanDefinition -> Objects.nonNull(beanDefinition.getDependsOn()))
+          .forEach(beanDefinition -> inject(beanDefinition, beanMap));
+    }
+
     private void inject(Object bean, Field field, Map<String, Object> beanMap) {
         Inject fieldAnnotation = field.getAnnotation(Inject.class);
 
-        if (StringUtils.isNotEmpty(fieldAnnotation.value())) {
+        if (Objects.nonNull(fieldAnnotation) && StringUtils.isNotEmpty(fieldAnnotation.value())) {
             injectToFiled(bean, field, beanMap.get(fieldAnnotation.value()));
         } else {
-            injectToFiled(bean, field, beanMap.get(field.getType().getName()));
+            try {
+                var injectBean = findBeanInstance(beanMap, field);
+                injectToFiled(bean, field, injectBean);
+            } catch (NoSuchBeanException | NoUniqueBeanException ex) {
+                throw new BeanInjectionException(
+                  String.format("Error injecting the field %s into bean %s", field.getName(),
+                    bean.getClass().getName()), ex);
+            }
         }
+    }
+
+    private void inject(BeanDefinition beanDefinition, Map<String, Object> beanMap) {
+        var bean = beanMap.get(beanDefinition.getName());
+        var beanClass = bean.getClass();
+
+        var dependencyMap = Arrays.stream(beanDefinition.getDependsOn())
+          .collect(Collectors.toMap(Function.identity(), beanMap::get));
+
+        Arrays.stream(beanClass.getDeclaredFields())
+          .filter(field -> Objects.nonNull(dependencyMap.get(field.getType().getName()))
+            || dependencyMap.values().stream()
+            .anyMatch(beanInstance -> beanInstance.getClass().isAssignableFrom(field.getType())))
+          .forEach(field -> inject(bean, field, beanMap));
+    }
+
+    private Object findBeanInstance(Map<String, Object> beanMap, Field field) {
+        var fieldType = field.getType().getName();
+        var beanInstance = beanMap.get(fieldType);
+        if (Objects.isNull(beanInstance)) {
+            var result = beanMap.values().stream()
+              .filter(beanInst -> beanInst.getClass().getName().equals(fieldType)).toList();
+            if (result.isEmpty()) {
+                throw new NoSuchBeanException(String.format("Could not find a bean with the type: %s", fieldType));
+            }
+            if (result.size() > 1) {
+                throw new NoUniqueBeanException(String.format("Multiple beans of type: %s found. "
+                  + "Current version doesn't support any constructor bean qualifiers so it's possible only to "
+                  + "pass a single type created bean as a constructor argument", fieldType));
+            }
+            return result.get(0);
+        }
+        return beanInstance;
     }
 
     private void injectToFiled(Object bean, Field field, Object injectBean) {
