@@ -15,7 +15,7 @@ The Bring takes care of [Dependency Injection (DI)](https://en.wikipedia.org/wik
 <summary> @Bean: </summary> 
 
 **[@Bean](https://github.com/maingroon/svydovets-bring/blob/master/src/main/java/com/bobocode/svydovets/annotation/Bean.java)**
-> This annotation is usually applicable to POJO that cannot be market as **[@Component](https://github.com/maingroon/svydovets-bring/blob/master/src/main/java/com/bobocode/svydovets/annotation/Component.java)**
+> This annotation is usually applicable to POJO that cannot be marked as **[@Component](https://github.com/maingroon/svydovets-bring/blob/master/src/main/java/com/bobocode/svydovets/annotation/Component.java)**
 > and in cases when we need to provide custom initialization for the POJO object.   
 > **NOTE: CLASS HAVE TO CONTAIN EMPTY CONSTRUCTOR**
 >
@@ -27,7 +27,7 @@ The Bring takes care of [Dependency Injection (DI)](https://en.wikipedia.org/wik
 >>> Step 2 -> Create the method that returns required POJO and mark this method as ***@Bean***  
 >>> ![name_without_name](https://user-images.githubusercontent.com/55089853/180370309-98a8e083-d631-425f-beaf-900a9a34f767.png)  
 >>> If you need to pass some unique name -> ***@Bean("bean_name")***  
-@@ -25,34 +35,41 @@
+
 >>
 >>> Full class  
 >>> ![bean_full](https://user-images.githubusercontent.com/55089853/180369802-cb99a79d-5a9f-414e-8d58-ab30d57fc246.png)
@@ -41,7 +41,7 @@ The Bring takes care of [Dependency Injection (DI)](https://en.wikipedia.org/wik
 >
 >> ### Example:
 >> Annotate class as **@Component**, in case presented on the picture below, the name for the bean will be
->> *"harryPotterQuoter"*  
+>> *"com.bobocode.svydovets.beans.scanner.quoter.books.HarryPotterQuoter"*  
 >> ![component](https://user-images.githubusercontent.com/55089853/180456037-c38d2cc1-c59c-4c87-b028-122dc388b407.png)
 >>
 >> You can pass your custom name for bean. This is helpful in cases when tou have beans that implement one interface,
@@ -67,18 +67,10 @@ The Bring takes care of [Dependency Injection (DI)](https://en.wikipedia.org/wik
 >> ![quoter](https://user-images.githubusercontent.com/55089853/180592649-d162226e-1871-458a-a448-cda86ac68a6a.png)
 >> ![quoter_r_1](https://user-images.githubusercontent.com/55089853/180594022-98e33b75-28ec-43fe-8df2-4d3abd7ed2af.png)
 >> ![quoter_r_2](https://user-images.githubusercontent.com/55089853/180594024-98219402-ce96-4d1c-b8ae-f249abbe6ab2.png)
-@@ -62,32 +79,113 @@
-> be injected bean with this name'.
 >> ### Example:
 >> ![hp_injected_quoterpng](https://user-images.githubusercontent.com/55089853/180594031-483426c6-149c-47ee-a2df-051822a86fba.png)
 </details>
-<details>
-<summary> Bring-Bean-Container: </summary>
 
-## Bring-Bean-Container
-> *Bring-Bean-Container* is a simple Map, that contains *bean name* and *Bean*, and persists in the ApplicationContext realization.
-> The *Bring-Bean-Container* contains all beans for particular ApplicationContext realization.
-</details>
 <details>
 <summary> @PostConstruct: </summary> 
 
@@ -115,11 +107,6 @@ The Bring takes care of [Dependency Injection (DI)](https://en.wikipedia.org/wik
 <details>
 <summary> How to add dependency to gradle project: </summary>
 
-## Simple example of code:
-> TODO: need to create a description with screenshots with step-by-step creation flow and description of why we are 
-> using it.
-
-## Install the svydovets-bring-framework:
 1. Add maven repository to your build.gradle. You need your github username and github packages read token.
 ```
 repositories {
