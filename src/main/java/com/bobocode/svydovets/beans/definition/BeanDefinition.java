@@ -2,10 +2,20 @@ package com.bobocode.svydovets.beans.definition;
 
 import java.lang.reflect.Method;
 
+import com.bobocode.svydovets.annotation.Component;
+import com.bobocode.svydovets.annotation.Configuration;
+import com.bobocode.svydovets.annotation.PostConstruct;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * A BeanDefinition describes a bean instance, which has property values, constructor argument values
  * for further bean creation.
  */
+@Builder
+@Getter
 public class BeanDefinition {
 
     /**
@@ -21,6 +31,12 @@ public class BeanDefinition {
      * Factory method for creation bean instance.
      */
     private Method factoryMethod;
+
+    /**
+     * Method marked as {@link PostConstruct} in {@link Component} or {@link Configuration} class.
+     */
+    private Method postConstructMethod;
+
     /**
      * Class of the configuration bean.
      */
@@ -29,57 +45,6 @@ public class BeanDefinition {
     /**
      * Contains bean names which this bean depends on.
      */
+    @Setter
     private String[] dependsOn;
-
-    public BeanDefinition(String name, Class<?> beanClass) {
-        this.name = name;
-        this.beanClass = beanClass;
-    }
-
-    public BeanDefinition(String name, Class<?> configurationClass, Method factoryMethod, Class<?> beanClass) {
-        this.name = name;
-        this.configurationClass = configurationClass;
-        this.factoryMethod = factoryMethod;
-        this.beanClass = beanClass;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Class<?> getBeanClass() {
-        return beanClass;
-    }
-
-    public void setBeanClass(Class<?> beanClass) {
-        this.beanClass = beanClass;
-    }
-
-    public Method getFactoryMethod() {
-        return factoryMethod;
-    }
-
-    public void setFactoryMethod(Method factoryMethod) {
-        this.factoryMethod = factoryMethod;
-    }
-
-    public String[] getDependsOn() {
-        return dependsOn;
-    }
-
-    public void setDependsOn(String[] dependsOn) {
-        this.dependsOn = dependsOn;
-    }
-
-    public Class<?> getConfigurationClass() {
-        return configurationClass;
-    }
-
-    public void setConfigurationClass(Class<?> configurationClass) {
-        this.configurationClass = configurationClass;
-    }
 }

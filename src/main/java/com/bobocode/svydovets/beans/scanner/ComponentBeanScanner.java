@@ -31,7 +31,11 @@ public class ComponentBeanScanner extends AbstractBeanScanner {
                     var name = type.getAnnotation(Component.class).value();
                     name = name.isEmpty() ? getTypeName(type) : name;
 
-                    return new BeanDefinition(name, type);
+                    return BeanDefinition.builder()
+                      .name(name)
+                      .beanClass(type)
+                      .postConstructMethod(findPostConstructMethod(type))
+                      .build();
                 })
                 .collect(Collectors.toMap(
                         BeanDefinition::getName,

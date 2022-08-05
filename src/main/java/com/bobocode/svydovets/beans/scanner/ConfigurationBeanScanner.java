@@ -85,7 +85,11 @@ public class ConfigurationBeanScanner extends AbstractBeanScanner {
     private BeanDefinition getBeanDefinition(Class<?> confClass) {
         var confName = confClass.getAnnotation(Configuration.class).value();
         confName = confName.isEmpty() ? getTypeName(confClass) : confName;
-        return new BeanDefinition(confName, confClass);
+        return BeanDefinition.builder()
+          .name(confName)
+          .beanClass(confClass)
+          .postConstructMethod(findPostConstructMethod(confClass))
+          .build();
     }
 
     /**
@@ -99,9 +103,14 @@ public class ConfigurationBeanScanner extends AbstractBeanScanner {
         var beanClass = beanMethod.getReturnType();
         if (beanClass.equals(Void.TYPE)) {
             throw new UnsupportedBeanTypeException(
-              String.format("Bean: %s with the return type VOID could not be added to the context", beanName));
+              String.format("Bean: %s with the return type void could not be added to the context", beanName));
         }
         beanName = beanName.isEmpty() ? getTypeName(beanClass) : beanName;
-        return new BeanDefinition(beanName, beanMethod.getDeclaringClass(), beanMethod, beanMethod.getReturnType());
+        return BeanDefinition.builder()
+          .name(beanName)
+          .configurationClass(beanMethod.getDeclaringClass())
+          .factoryMethod(beanMethod)
+          .beanClass(beanMethod.getReturnType())
+          .build();
     }
 }
