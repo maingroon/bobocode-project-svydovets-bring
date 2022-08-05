@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 import com.bobocode.svydovets.beans.factory.example.postconstruct.ComponentWithPostConstruct1;
 import com.bobocode.svydovets.beans.factory.example.postconstruct.ComponentWithPostConstruct2;
 import com.bobocode.svydovets.beans.scanner.quoter.bookshelfs.FantasyBookshelf;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -24,6 +25,7 @@ import com.bobocode.svydovets.beans.scanner.ConfigurationBeanScanner;
 import com.bobocode.svydovets.beans.scanner.quoter.books.BeanPostprocessor1;
 import com.bobocode.svydovets.beans.scanner.quoter.books.BeanPostprocessor2;
 import com.bobocode.svydovets.beans.scanner.quoter.books.HarryPotterQuoter;
+
 import org.mockito.Mockito;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -60,15 +62,6 @@ class DefaultListableBeanFactoryTest {
         assertTrue(beans.get("hp").getClass().isAssignableFrom(HarryPotterQuoter.class));
         assertTrue(beans.containsKey("discworld"));
         assertTrue(beans.containsKey(FantasyBookshelf.class.getName()));
-        assertEquals(7, beans.size());
-    }
-
-    @Test
-    void configDeclaredBeanWithConstructorInjectionFail() {
-        var configScanResult = new ConfigurationBeanScanner().scan(EXCEPTION_INJECT_MOCK_PACKAGE);
-        factory = new DefaultListableBeanFactory(postprocessorScanner.scan(ROOT_MOCK_PACKAGE));
-        assertThrowsExactly(UnsupportedOperationException.class, () -> factory.createBeans(configScanResult),
-          "Creating bean instance with other injected beans is not yet supported");
     }
 
     @Test

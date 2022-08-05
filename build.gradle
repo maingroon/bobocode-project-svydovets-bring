@@ -110,8 +110,8 @@ publishing {
             from project.components.java
             groupId = project.group
 
-            artifact sourcesJar
-            artifact javadocJar
+            artifact project.sourcesJar
+            artifact project.javadocJar
         }
     }
     repositories {
