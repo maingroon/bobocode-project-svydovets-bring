@@ -80,6 +80,14 @@ The Bring takes care of [Dependency Injection (DI)](https://en.wikipedia.org/wik
 > The *Bring-Bean-Container* contains all beans for particular ApplicationContext realization.
 </details>
 <details>
+<summary> @PostConstruct: </summary> 
+
+**[@PostConstruct](https://github.com/maingroon/svydovets-bring/blob/master/src/main/java/com/bobocode/svydovets/annotation/PostConstruct.java)**
+> This annotation is a bean lifecycle callback applied to the method that performs additional initialization
+>> ### Example:
+>>![image](https://user-images.githubusercontent.com/12940663/183023353-a9c8c638-b335-451d-be4c-01c6914df4a9.png)
+</details>
+<details>
 <summary> ApplicationContext: </summary>
 
 ## Description for the [ApplicationContext](https://github.com/maingroon/svydovets-bring/blob/master/src/main/java/com/bobocode/svydovets/context/ApplicationContext.java):
@@ -93,6 +101,14 @@ The Bring takes care of [Dependency Injection (DI)](https://en.wikipedia.org/wik
 > - *getBean(String beanName, Class<T> beanType)* - provides bean by the bean name and by the bean type
 > - *getBeans(Class<?> beanType)* - provides beans by the bean type
 >
+</details>
+<details>
+<summary> BeanPostProcessor: </summary> 
+
+**[BeanPostProcessor](https://github.com/maingroon/svydovets-bring/blob/master/src/main/java/com/bobocode/svydovets/beans/bpp/BeanPostProcessor.java)**
+> This interface defines callback methods that you can implement to provide you own bean instantiation logic to customize beans someway, etc. PostConstruct methods will be applied to all beans during creation.  You can define one or more postprocessors they will work sequentially.
+>> ### Example:
+>>![image](https://user-images.githubusercontent.com/12940663/183030773-699d0bb9-c2bc-4c83-a651-589588a3a7bd.png)
 </details>
 </details>
 <br>
