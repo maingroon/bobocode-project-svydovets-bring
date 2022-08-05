@@ -26,6 +26,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
+/**
+ * Default BeanFactory implementation.
+ */
 @Log4j2
 @RequiredArgsConstructor
 public class DefaultListableBeanFactory implements BeanFactory {
@@ -61,6 +64,13 @@ public class DefaultListableBeanFactory implements BeanFactory {
         return beanMap;
     }
 
+    /**
+     * Creates a Pair consisting of Bean definition name and bean object.
+     * @param beanDefinition the bean definition
+     * @param componentBeans map, where key - bean name, and value - bean object
+     * @return Pair left object - bean name, right object - bean object
+     * @throws BeanInstantiationException if the underlying method throws an exception
+     */
     private Pair<String, Object> createConfigurationDeclaredBean(BeanDefinition beanDefinition,
                                                                  Map<String, Object> componentBeans) {
         var declaredClass = beanDefinition.getConfigurationClass();
@@ -82,6 +92,12 @@ public class DefaultListableBeanFactory implements BeanFactory {
         }
     }
 
+    /**
+     * Creates a bean from bean definition.
+     * @param beanDefinition the bean definition
+     * @return bean object
+     * @throws BeanInstantiationException if the underlying methods throws an exception
+     */
     private Object createComponentBean(BeanDefinition beanDefinition) {
         try {
             Object originalBean = beanDefinition.getBeanClass().getConstructor().newInstance();
@@ -100,6 +116,12 @@ public class DefaultListableBeanFactory implements BeanFactory {
         }
     }
 
+    /**
+     * Applies postprocessor to bean.
+     * @param bean bean object to modify
+     * @param beanName string name of the bean
+     * @return modified bean object
+     */
     private Object applyPostprocessorsBeforeInitialization(Object bean, String beanName) {
         var result = bean;
         for (var postprocessor : beanPostProcessors) {
@@ -189,6 +211,12 @@ public class DefaultListableBeanFactory implements BeanFactory {
         return beanInstance;
     }
 
+    /**
+     * Injects a bean object into a field of another bean.
+     * @param bean a bean object where injectBean will be injected
+     * @param field a field to which injectBean will be injected
+     * @param injectBean bean to be injected
+     */
     private void injectToFiled(Object bean, Field field, Object injectBean) {
         try {
             field.setAccessible(true);
