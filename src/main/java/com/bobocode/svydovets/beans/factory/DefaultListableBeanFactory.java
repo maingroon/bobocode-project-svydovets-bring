@@ -74,7 +74,9 @@ public class DefaultListableBeanFactory implements BeanFactory {
               new Object[beanDefinition.getFactoryMethod().getParameters().length]);
             var beanInstanceProcessedBeforeInitialization =
               applyPostprocessorsBeforeInitialization(beanInstance, componentBeanName);
-            return Pair.of(beanDefinition.getName(), beanInstanceProcessedBeforeInitialization);
+            var beanInstanceProcessedAfterInitialization =
+              applyPostprocessorsAfterInitialization(beanInstanceProcessedBeforeInitialization, componentBeanName);
+            return Pair.of(beanDefinition.getName(), beanInstanceProcessedAfterInitialization);
         } catch (IllegalAccessException | InvocationTargetException ex) {
             throw new BeanInstantiationException("Could not instantiate a bean.", ex);
         }
@@ -88,6 +90,7 @@ public class DefaultListableBeanFactory implements BeanFactory {
             if (beanDefinition.getPostConstructMethod() != null) {
                 beanDefinition.getPostConstructMethod().invoke(modifiedBean);
             }
+            modifiedBean = applyPostprocessorsAfterInitialization(modifiedBean, beanDefinition.getName());
             return modifiedBean;
         } catch (InvocationTargetException | InstantiationException
                  | IllegalAccessException | NoSuchMethodException exception) {
@@ -102,6 +105,19 @@ public class DefaultListableBeanFactory implements BeanFactory {
         for (var postprocessor : beanPostProcessors) {
             result = postprocessor.postProcessBeforeInitialization(bean, beanName);
             if (Objects.isNull(result)) {
+                log.info("Postprocessor {} returns null, all subsequent postprocessors will be skipped",
+                  postprocessor.getClass().getSimpleName());
+                break;
+            }
+        }
+        return result;
+    }
+
+    private Object applyPostprocessorsAfterInitialization(Object bean, String beanName) {
+        var result = bean;
+        for (var postprocessor : beanPostProcessors) {
+            result = postprocessor.postProcessAfterInitialization(bean, beanName);
+            if (result == null) {
                 log.info("Postprocessor {} returns null, all subsequent postprocessors will be skipped",
                   postprocessor.getClass().getSimpleName());
                 break;
