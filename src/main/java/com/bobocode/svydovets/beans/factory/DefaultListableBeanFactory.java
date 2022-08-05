@@ -3,6 +3,7 @@ package com.bobocode.svydovets.beans.factory;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -17,7 +18,7 @@ import com.bobocode.svydovets.annotation.Configuration;
 import com.bobocode.svydovets.annotation.Inject;
 import com.bobocode.svydovets.beans.bpp.BeanPostProcessor;
 import com.bobocode.svydovets.beans.definition.BeanDefinition;
-import com.bobocode.svydovets.beans.exception.BeanInstantiationException;
+import com.bobocode.svydovets.exception.BeanInstantiationException;
 import com.bobocode.svydovets.exception.BeanInjectionException;
 import com.bobocode.svydovets.exception.NoSuchBeanException;
 import com.bobocode.svydovets.exception.NoUniqueBeanException;
@@ -41,6 +42,11 @@ public class DefaultListableBeanFactory implements BeanFactory {
      */
     @Override
     public Map<String, Object> createBeans(Map<String, BeanDefinition> definitionMap) {
+        if (definitionMap.isEmpty()) {
+            log.warn("There are no bean definitions to create beans. Please check for the instances of "
+                + "@Component or @Configuration with @Bean objects under your package.");
+            return Collections.emptyMap();
+        }
         var componentBeans = definitionMap.values().stream()
           .filter(bd -> Objects.isNull(bd.getFactoryMethod()))
           .collect(Collectors.toMap(BeanDefinition::getName, this::createComponentBean));

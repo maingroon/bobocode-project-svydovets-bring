@@ -1,4 +1,4 @@
-package com.bobocode.svydovets.beans.exception;
+package com.bobocode.svydovets.exception;
 
 public class BeanInstantiationException extends RuntimeException {
     public BeanInstantiationException(String message) {

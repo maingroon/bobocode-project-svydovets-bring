@@ -121,6 +121,13 @@ public class AnnotationConfigurationApplicationContextTest {
     }
 
     @ParameterizedTest
+    @ValueSource(strings = {"com.bobocode.svydovets.beans.scanner.quoter.books.DuneQuoter"})
+    void getBeanByDefaultName_shouldReturnBeanOnClassNameWithPackage(String beanName) {
+        final DuneQuoter bean = (DuneQuoter) context.getBean(beanName);
+        assertNotNull(bean);
+    }
+
+    @ParameterizedTest
     @NullSource
     void getBeanByType_shouldThrowExceptionWhenBeanNameIsNull(Class<?> beanType) {
         assertThrows(NullPointerException.class, () -> context.getBean(beanType));
