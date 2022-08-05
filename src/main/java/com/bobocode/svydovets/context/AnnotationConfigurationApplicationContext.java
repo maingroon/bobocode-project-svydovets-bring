@@ -56,8 +56,10 @@ public class AnnotationConfigurationApplicationContext implements ApplicationCon
               + "Please, specify a beanName", beans.size(), beanType.getSimpleName()));
         }
         if (beans.isEmpty()) {
-            throw new NoSuchBeanDefinitionException(String.format("Bean with beanType '%s' is not found!",
-              beanType.getSimpleName()));
+            throw new NoSuchBeanDefinitionException(
+                String.format("Bean with beanType '%s' is not found! Please check your package name and "
+                        + " instances of @Component or @Configuration with @Bean objects under your package",
+                beanType.getSimpleName()));
         }
 
         return beanType.cast(beans.get(0));

@@ -11,6 +11,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 
 import com.bobocode.svydovets.annotation.Bean;
@@ -55,8 +56,20 @@ public class ConfigurationBeanScanner extends AbstractBeanScanner {
               .collect(Collectors
                 .toMap(Map.Entry::getKey, Map.Entry::getValue));
         } catch (IllegalStateException ex) {
-            throw new NoUniqueBeanDefinitionException(ex.getMessage());
+            throw createUniqueBeanDefinitionException(ex);
         }
+    }
+
+    private NoUniqueBeanDefinitionException createUniqueBeanDefinitionException(IllegalStateException ex) {
+        String errMsg = ex.getMessage();
+        String editedMsg;
+        if (StringUtils.isBlank(errMsg)) {
+            editedMsg = "Duplicate bean found. Check possible duplicates under the @Component and @Bean annotations.";
+        } else {
+            String correctedMsg = errMsg.substring(0, errMsg.indexOf("(")).replace("key", "bean");
+            editedMsg = correctedMsg.trim() + ". Check possible duplicates under the @Component and @Bean annotations.";
+        }
+        return new NoUniqueBeanDefinitionException(editedMsg);
     }
 
     @Override

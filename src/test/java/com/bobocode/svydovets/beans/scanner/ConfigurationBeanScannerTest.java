@@ -58,7 +58,10 @@ class ConfigurationBeanScannerTest {
 
     @Test
     void scanDuplicateBeanFail() {
-        assertThrows(NoUniqueBeanDefinitionException.class, () -> SCANNER.scan(PACKAGE_WITH_DUPLICATE_EXCEPTION));
+        assertThrows(
+            NoUniqueBeanDefinitionException.class,
+            () -> SCANNER.scan(PACKAGE_WITH_DUPLICATE_EXCEPTION),
+            "Duplicate bean fantasy. Check possible duplicates under the @Component and @Bean annotations.");
     }
 
     @Test

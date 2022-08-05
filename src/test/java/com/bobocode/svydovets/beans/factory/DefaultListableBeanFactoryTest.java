@@ -106,4 +106,11 @@ class DefaultListableBeanFactoryTest {
         assertEquals(20, bean2.getIntVar());
         assertEquals("test2", bean2.getStrVar());
     }
+
+    @Test
+    void createBean_shouldReturnEmptyMapWhenDefinitionMapIsEmpty() {
+        factory = new DefaultListableBeanFactory(Collections.EMPTY_SET);
+        Map<String, Object> beans = factory.createBeans(Map.of());
+        assertTrue(beans.isEmpty());
+    }
 }
