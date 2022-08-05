@@ -1,13 +1,13 @@
 package com.bobocode.svydovets.exception;
 
 /**
- * Exception thrown when a bean can't be injected
+ * Exception thrown when a bean can't be injected.
  */
 public class BeanInjectionException extends RuntimeException {
 
     /**
-     * Create a new exception {@code BeanInjectionException}
-     * @param message the detail message
+     * Create a new exception {@code BeanInjectionException}.
+     * @param message the detailed message
      * @param cause the root cause
      */
     public BeanInjectionException(String message, Throwable cause) {

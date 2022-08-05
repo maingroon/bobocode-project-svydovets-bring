@@ -1,7 +1,7 @@
 package com.bobocode.svydovets.exception;
 
 /**
- * Exception can be thrown when something goes wrong while working with Beans
+ * Exception can be thrown when something goes wrong while working with Beans.
  */
 public class BeansException extends RuntimeException {
 
@@ -9,7 +9,7 @@ public class BeansException extends RuntimeException {
     }
 
     /**
-     * Create a new exception {@code BeansException}
+     * Create a new exception {@code BeansException}.
      * @param message the detailed message
      */
     public BeansException(String message) {

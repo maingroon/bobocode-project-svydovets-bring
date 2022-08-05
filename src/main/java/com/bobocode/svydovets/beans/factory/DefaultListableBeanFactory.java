@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * Default BeanFactory implementation
+ * Default BeanFactory implementation.
  */
 @Log4j2
 @RequiredArgsConstructor
@@ -65,11 +65,11 @@ public class DefaultListableBeanFactory implements BeanFactory {
     }
 
     /**
-     * Creates a Pair consisting of Bean definition name and bean object
+     * Creates a Pair consisting of Bean definition name and bean object.
      * @param beanDefinition the bean definition
      * @param componentBeans map, where key - bean name, and value - bean object
-     * @throws BeanInstantiationException if the underlying method throws an exception
      * @return Pair left object - bean name, right object - bean object
+     * @throws BeanInstantiationException if the underlying method throws an exception
      */
     private Pair<String, Object> createConfigurationDeclaredBean(BeanDefinition beanDefinition,
                                                                  Map<String, Object> componentBeans) {
@@ -91,10 +91,10 @@ public class DefaultListableBeanFactory implements BeanFactory {
     }
 
     /**
-     * Creates a bean from bean definition
+     * Creates a bean from bean definition.
      * @param beanDefinition the bean definition
-     * @throws BeanInstantiationException if the underlying methods throws an exception
      * @return bean object
+     * @throws BeanInstantiationException if the underlying methods throws an exception
      */
     private Object createComponentBean(BeanDefinition beanDefinition) {
         try {
@@ -114,7 +114,7 @@ public class DefaultListableBeanFactory implements BeanFactory {
     }
 
     /**
-     * Applies postprocessor to bean
+     * Applies postprocessor to bean.
      * @param bean bean object to modify
      * @param beanName string name of the bean
      * @return modified bean object
@@ -196,7 +196,7 @@ public class DefaultListableBeanFactory implements BeanFactory {
     }
 
     /**
-     * Injects a bean object into a field of another bean
+     * Injects a bean object into a field of another bean.
      * @param bean a bean object where injectBean will be injected
      * @param field a field to which injectBean will be injected
      * @param injectBean bean to be injected
