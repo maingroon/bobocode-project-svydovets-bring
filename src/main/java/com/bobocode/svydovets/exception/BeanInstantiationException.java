@@ -1,4 +1,4 @@
-package com.bobocode.svydovets.beans.exception;
+package com.bobocode.svydovets.exception;
 
 /**
  * Exception thrown when a bean can't be instantiated.
