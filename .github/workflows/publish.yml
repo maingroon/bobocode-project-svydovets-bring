@@ -15,7 +15,7 @@ jobs:
           distribution: 'adopt-hotspot'
 
       - name: Publish to Github Packages
-        run: ./gradlew publish --stacktrace    # publish jar to GitHub Packages
+        run: ./gradlew sourcesJar publish --stacktrace    # publish jar to GitHub Packages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_USER_NAME: ${{ secrets.GH_CI_USER }}
